@@ -1,0 +1,1865 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+   <title>Main</title>
+   <script src="/js/jQuery-2.1.4.min.js"></script>
+	<!--    <script src="/js/platform.js"></script> -->
+   
+	<!-- Custom styles for this template-->
+	<link href="../css/sb-admin-2.min.css" rel="stylesheet">
+	
+	<!-- Custom fonts for this template -->
+	<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	
+	<!-- Custom styles for this page -->
+	<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	
+	<!-- Bootstrap core JavaScript-->
+	<script src="/vendor/jquery/jquery.min.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+	
+	<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+  
+  
+</head>
+<style>
+	input:not(.input_not_css) {
+		border : 0px;
+		background-color : transparent;
+	}
+	
+	table {
+		font-size: 12px !important;
+		text-align: center;
+	}
+	table input {
+		text-align: center;
+	}
+	
+	.sheet-container{
+		
+	}
+	
+	.sheet-container .logo {
+		position: relative;	
+		height: 100px;
+	}
+	
+	.sheet-container .logo img {
+		position: absolute;
+		width: 1000px;
+		height: 100px;
+		top: 0px;
+		left: 20px;
+	}
+	
+	.sheet-container .logo h2 {
+		position: absolute;
+		top: 35%;
+		left: 50%;
+	}
+	
+	.flat-title {
+		
+	}
+	
+	.flat-title .search {
+		
+	}
+	
+	.flat-title .search select {
+		display: inline-block;
+	}
+	
+		
+	.slide-left {
+	width: 0px !important;
+	transition: 1s;
+	}
+	
+	.slide-right {
+		width: 100% !important;
+		transition: 1s;
+	}
+
+	.burger {
+		color: white; font-size:30px; cursor:pointer;
+		position: absolute;
+		left: 30px;
+		top: 15px;
+	}
+	
+</style>
+<script type="text/javascript">
+	$("document").ready(function(){
+		var p_type = $('#p_type').val();
+		var formObj = $("#platList");
+		var fileName = "";
+		
+		// 현재 연도 가져와서 최근 10년 변수저장------------------------------------
+		let today = new Date();
+		let year = today.getFullYear();
+		
+		var arrYear = new Array();
+		
+		for(var i=0; i<10; i++)
+		{
+			arrYear[i]=year-i + "년";
+		}
+		
+		var monthSelect = document.getElementById("selete_month");
+		var yearSelect = document.getElementById("selete_year");
+		
+		var option1 = document.createElement("option");
+		var option2 = document.createElement("option");
+		var option3 = document.createElement("option");
+		var option4 = document.createElement("option");
+		var option5 = document.createElement("option");
+		var option6 = document.createElement("option");
+		option1.text = arrYear[0];
+		option2.text = arrYear[1];
+		option3.text = arrYear[2];
+		option4.text = arrYear[3];
+		option5.text = arrYear[4];
+		option6.text = arrYear[5];
+		option1.value = arrYear[0];
+		option2.value = arrYear[1];
+		option3.value = arrYear[2];
+		option4.value = arrYear[3];
+		option5.value = arrYear[4];
+		option6.value = arrYear[5];
+		yearSelect.add(option1, null);
+		yearSelect.add(option2, null);
+		yearSelect.add(option3, null);
+		yearSelect.add(option4, null);
+		yearSelect.add(option5, null);
+		yearSelect.add(option6, null);
+		
+		
+		// -------------------------------------------------------------------
+		
+		//var langSelect = document.getElementById("selete_year");
+		//var selectValue = langSelect.options[langSelect.selectedIndex].value;
+		//var selectText = langSelect.options[langSelect.selectedIndex].text;
+	
+
+		
+		switch(p_type){
+		case 'p_bookcube' :
+			$("#bookcubeId").show();
+			break;
+		case 'p_epub' :
+			$("#epubId").show();
+			break;
+		case 'p_joara' :
+			$("#joaraId").show();
+			break;
+		case 'p_kakao' :
+			$("#kakaoId").show();
+			break;
+		case 'p_kyobo' :
+			$("#kyoboId").show();
+			break;
+		case 'p_mrblue' :
+			$("#mrblueId").show();
+			break;
+		case 'p_munpia' :
+			$("#munpiaId").show();
+			break;
+		case 'p_naver' :
+			$("#naverId").show();
+			break;
+		case 'p_ridibooks' :
+			$("#ridibooksId").show();
+			break;
+		case 'p_romance' :
+			$("#romanceId").show();
+			break;
+		case 'p_tocsoda' :
+			$("#tocsodaId").show();
+			break;
+		case 'p_winstore' :
+			$("#winstoreId").show();
+			break;
+		case 'p_yes24' :
+			$("#yes24Id").show();
+			break;
+		case 'p_aladin' :
+			$("#aladinId").show();
+			break;
+		}
+		
+		
+		$("#btnUpdate").on("click", function(){
+			if (confirm("수정 하시겠습니까?")) {
+				formObj.attr("action", "/ebook/apply");
+				formObj.attr("method", "post");
+				formObj.submit();
+				
+				alert("수정 완료되었습니다.");
+			} else {
+				alert("수정에 실패하였습니다.");
+			}
+		}); 
+
+		$('input[type=file]').change(function(e){
+			fileName = e.target.files[0].name;
+		});
+		
+		$("#btnDownLoad").on("click", function(){
+			if (confirm("엑셀파일로 다운로드 하시겠습니까? ")) {
+				formObj.attr("action", "/ebook/download");
+				formObj.attr("method", "post");
+				formObj.submit();
+			} else {
+				
+			}
+		});
+		
+		$("#btnSelect").on("click", function(){
+			formObj.attr("action", "/ebook/list?platformType=" + p_type);
+			formObj.attr("method", "post");
+			formObj.submit();
+		});
+
+		$("#btnUpload").on("click", function(){
+			// validaion
+			var yearText = $("#yearText").val();
+			var monthText = $("#monthText").val();
+			var excelFile = $("#excelFile").val();
+			
+
+			if( yearText == null || yearText == undefined || yearText == '' ){
+				alert("\'년도\'를 입력해주세요.");
+				return;
+			}
+			if( monthText == null || monthText == undefined || monthText == '' ){
+				alert("\'월\'을 입력해주세요.");
+				return;
+			}
+			if( excelFile == null || excelFile == undefined || excelFile == '' ){
+				alert("파일을 선택해주세요.");
+				return;
+			}
+			
+			if (confirm("업로드 하시겠습니까? 현재 파일명 : " + fileName + "입니다.")) {
+				formObj.attr("action", "/ebook/process");
+				formObj.attr("method", "post");
+				formObj.attr("enctype", "multipart/form-data");
+				formObj.submit();
+			} else {
+					
+			}
+		});
+		
+		$("#btnUpload_yes24B2b").on("click", function(){
+			// validaion
+			var yearText = $("#yearText").val();
+			var monthText = $("#monthText").val();
+			var excelFile = $("#excelFile").val();
+			
+
+			if( yearText == null || yearText == undefined || yearText == '' ){
+				alert("\'년도\'를 입력해주세요.");
+				return;
+			}
+			if( monthText == null || monthText == undefined || monthText == '' ){
+				alert("\'월\'을 입력해주세요.");
+				return;
+			}
+			if( excelFile == null || excelFile == undefined || excelFile == '' ){
+				alert("파일을 선택해주세요.");
+				return;
+			}
+			
+			if (confirm("업로드 하시겠습니까? 현재 파일명 : " + fileName + "입니다.")) {
+				formObj.attr("action", "/ebook/process_yes24B2B");
+				formObj.attr("method", "post");
+				formObj.attr("enctype", "multipart/form-data");
+				formObj.submit();
+			} else {
+					
+			}
+		});
+		
+		switchNum();
+	});
+	
+	//selectBox 안씀
+	function selectBox(){
+		var selectMonth = monthSelect.options[monthSelect.selectedIndex].text;
+		var selectYear = yearSelect.options[yearSelect.selectedIndex].text;
+		
+		//$("input[name='p_year']").eq(0).val(selectYear);
+		//$("input[name='p_month']").eq(0).val(selectMonth);
+	}
+	
+	function doPopCheckAll() {
+		if ($('input:checkbox[name=delete_ids]').length > 0) {
+			if ($("input:checkbox[name='all_chk']").is(":checked")) {
+				$('input:checkbox[name=delete_ids]').each(function() {
+					$(this).prop('checked', true);
+				});
+			} else {
+				$('input:checkbox[name=delete_ids]').each(function() {
+					$(this).prop('checked', false);
+				});
+			}
+		}
+	}
+	
+	function remove(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		console.log(token);
+		
+		
+		var chkVal = "";
+		$(":checkbox[name='delete_ids']:checked").each(function(pi,po){
+			chkVal += po.value+",";
+		});
+		
+		if(chkVal!=""){
+			chkVal = chkVal.substring(0, chkVal.length-1);
+		}
+		
+		console.log("### chkVal : " + chkVal);
+
+		/*		
+		 $.ajax({
+             url: '/ebook/remove', 					
+             type: 'POST',
+             data: { "delete_ids" : chkVal },
+             beforeSend : function(xhr)
+             {   // 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+                 xhr.setRequestHeader( header, token );
+             },
+             success: function(data, textStatus, jqXHR)
+             {
+                 alert("success!!");
+             },
+             error: function (jqXHR, textStatus, errorThrown)
+             {
+                 alert(errorThrown + " " + textStatus);
+                 //alert("error!!");
+             }
+        });
+		*/
+		
+		if (confirm("삭제 하시겠습니까?")) {
+			$.ajax({
+				type:"post",
+				url:"/ebook/remove",
+				data:	{ 
+							"delete_ids" : chkVal ,
+							"p_type"	: "[[${platformType}]]"
+						},
+						
+				beforeSend : function(xhr) {   
+					// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+	                 xhr.setRequestHeader( header, token );
+	             },
+				success:function(data, textStatus, jqXHR){
+
+						if(textStatus){
+							alert("삭제 되었습니다.");
+							location.href="/ebook/list?platformType=" + "[[${platformType}]]";
+						}else{
+							alert("삭제가 실패 되었습니다.");
+						}
+				},
+			     error:function(request,status,error){
+			         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		        }
+
+			});
+		} else{
+			
+		}
+
+		if(chkVal==""){
+			alert("삭제할 데이터를 체크해주세요.");
+			return ;
+		}
+		
+		
+		
+		
+	}
+	
+	function apply(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		console.log(token);
+		
+		if (confirm("수정 하시겠습니까?")) {
+			$.ajax({
+				type:"post",
+				url:"/ebook/apply",
+				data:	{ 
+							"p_type"	: "[[${platformType}]]"
+						},
+						
+				beforeSend : function(xhr) {   
+					// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+	                 xhr.setRequestHeader( header, token );
+	             },
+				success:function(data, textStatus, jqXHR){
+
+						if(textStatus){
+							alert("수정 되었습니다.");
+							location.href="/ebook/list?platformType=" + "[[${platformType}]]";
+						}else{
+							alert("수정이 실패 되었습니다.");
+						}
+				},
+			     error:function(request,status,error){
+			         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		        }
+
+			});
+		} else{
+			
+		}
+	}
+	
+	function replaceAll(str, searchStr, replaceStr) {
+		return str.split(searchStr).join(replaceStr);
+	}
+
+	
+	function switchNumCell(thisObj) {
+		console.log('===',$(thisObj).val());
+		var tempNum = $(thisObj).val();
+		
+		tempNum = replaceAll(tempNum, ",", "");
+		if ( !$.isNumeric(tempNum) ) {
+			$(thisObj).val("");
+		} else {
+			tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+			$(thisObj).val(tempNum);
+		}
+	}
+	
+	
+	/*
+	$('.netPrice').onKeyup(function(){
+		console.log($(this).val());
+	});
+	*/
+
+	function switchNum(){
+		var p_type = $('#p_type').val();
+		
+		switch(p_type){
+		case 'p_bookcube' :
+			var size = $("input[name='netPrice']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='netPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salePrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='discount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='discount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='discount']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='fee']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='fee']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='fee']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='netTargetPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netTargetPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netTargetPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_epub' :
+			var size = $("input[name='publisherAmount']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='publisherAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='publisherAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='publisherAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salesAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salesAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salesAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cencelsAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cencelsAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cencelsAmount']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_joara' :
+			var size = $("input[name='unit']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='unit']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='unit']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='unit']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='saleAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='saleAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='saleAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_kakao' :
+			var size = $("input[name='useTicketAmount']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='useTicketAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='useTicketAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='useTicketAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cacheSum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cacheSum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cacheSum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cpp1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cpp1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cpp1']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='cpl1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cpl1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cpl1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp1_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp1_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp1_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp2_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp2_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp2_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp3_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp3_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp3_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp7_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp7_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp7_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp8_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp8_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp8_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp9_1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp9_1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp9_1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cpp2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cpp2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cpp2']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='cpl2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cpl2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cpl2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp1_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp1_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp1_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp2_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp2_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp2_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp3_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp3_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp3_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp7_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp7_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp7_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp8_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp8_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp8_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cp9_2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cp9_2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cp9_2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='eventCache1']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='eventCache1']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='eventCache1']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='eventCache2']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='eventCache2']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='eventCache2']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='originalSum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='originalSum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='originalSum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='valueSupply']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='valueSupply']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='valueSupply']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='taxAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='taxAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='taxAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_kyobo' :
+			var size = $("input[name='netPrice']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='netPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salePrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='saleRate']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='saleRate']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='saleRate']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='download']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='download']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='download']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='netTargetPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netTargetPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netTargetPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='netTargetPriceAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netTargetPriceAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netTargetPriceAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_mrblue' :
+			var size = $("input[name='fixedNum']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				
+				tempNum = $("input[name='fixedNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='fixedNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='fixedNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='fixedSales']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='fixedSales']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='fixedSales']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='fixedPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='fixedPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='fixedPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnerentalNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnerentalNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnerentalNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnerentalUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnerentalUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnerentalUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnerentalPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnerentalPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnerentalPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnemngrNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnemngrNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnemngrNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnemngrUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnemngrUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnemngrUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppOnemngrPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppOnemngrPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppOnemngrPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllrentalNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllrentalNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllrentalNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllrentalUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllrentalUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllrentalUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllrentalPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllrentalPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllrentalPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllmngrNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllmngrNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllmngrNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllmngrUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllmngrUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllmngrUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='aAppAllmngrPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='aAppAllmngrPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='aAppAllmngrPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnerentalNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnerentalNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnerentalNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnerentalUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnerentalUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnerentalUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnerentalPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnerentalPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnerentalPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnemngrNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnemngrNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnemngrNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnemngrUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnemngrUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnemngrUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppOnemngrPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppOnemngrPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppOnemngrPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllrentalNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllrentalNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllrentalNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllrentalUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllrentalUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllrentalUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllrentalPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllrentalPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllrentalPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllmngrNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllmngrNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllmngrNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllmngrUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllmngrUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllmngrUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iAppAllmngrPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iAppAllmngrPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iAppAllmngrPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='amountNum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='amountNum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='amountNum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='amountUse']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='amountUse']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='amountUse']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='amountPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='amountPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='amountPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='amountSettlement']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='amountSettlement']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='amountSettlement']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='sales']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='sales']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='sales']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+					
+			}
+			break;
+		case 'p_munpia' :
+			var size = $("input[name='totalSales']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='totalSales']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='totalSales']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='totalSales']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='totalSalesCencel']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='totalSalesCencel']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='totalSalesCencel']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='realSale']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='realSale']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='realSale']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='subPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='subPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='subPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ios']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ios']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ios']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_naver' :
+			var size = $("input[name='rentalNumber']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				
+				tempNum = $("input[name='rentalNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='rentalNonpy']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalNonpy']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalNonpy']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='rentalFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalFree']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='rentalPaidCookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalPaidCookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalPaidCookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='rentalFreeCookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalFreeCookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalFreeCookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='rentalPaidICookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalPaidICookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalPaidICookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='rentalFreeICookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='rentalFreeICookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='rentalFreeICookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownNonpy']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownNonpy']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownNonpy']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownFree']").eq(i).val(tempNum);
+				}
+					
+				tempNum = $("input[name='ownPaidCookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownPaidCookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownPaidCookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownFreeCookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownFreeCookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownFreeCookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownPaidICookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownPaidICookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownPaidICookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ownFreeICookie']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ownFreeICookie']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ownFreeICookie']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieRentalNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieRentalNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieRentalNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieRentalPaid']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieRentalPaid']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieRentalPaid']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieRentalFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieRentalFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieRentalFree']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieOwnNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieOwnNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieOwnNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieOwnPaid']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieOwnPaid']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieOwnPaid']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cookieOwnFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cookieOwnFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cookieOwnFree']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieRentalNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieRentalNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieRentalNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieRentalPaid']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieRentalPaid']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieRentalPaid']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieRentalFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieRentalFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieRentalFree']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieOwnNumber']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieOwnNumber']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieOwnNumber']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieOwnPaid']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieOwnPaid']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieOwnPaid']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieOwnFree']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieOwnFree']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieOwnFree']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iCookieFee']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iCookieFee']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iCookieFee']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='sum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='sum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='sum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_ridibooks' :
+			var size = $("input[name='payment']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_romance' :
+			var size = $("input[name='internetSales']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='internetSales']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='internetSales']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='internetSales']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_tocsoda' :
+			var size = $("input[name='pc']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='pc']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='pc']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='pc']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='android']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='android']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='android']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='ios']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='ios']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='ios']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='iosIap']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='iosIap']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='iosIap']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='sum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='sum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='sum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_winstore' :
+			var size = $("input[name='settlementTargetAmount']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='settlementTargetAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='settlementTargetAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='settlementTargetAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salesAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salesAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salesAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='cencelsAmount']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='cencelsAmount']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='cencelsAmount']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='sum']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='sum']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='sum']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='customerPayment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='customerPayment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='customerPayment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='customerPaymentReceipt']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='customerPaymentReceipt']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='customerPaymentReceipt']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='customerPaymentEtc']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='customerPaymentEtc']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='customerPaymentEtc']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='customerPaymentService']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='customerPaymentService']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='customerPaymentService']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='customerPaymentServiceEtc']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='customerPaymentServiceEtc']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='customerPaymentServiceEtc']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='serviceDeduction']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='serviceDeduction']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='serviceDeduction']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_yes24' :
+			var size = $("input[name='brandSalePrice']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='brandSalePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='brandSalePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='brandSalePrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salesSalePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salesSalePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salesSalePrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salesRefundPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salesRefundPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salesRefundPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='eventSalePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='eventSalePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='eventSalePrice']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		case 'p_aladin' :
+			var size = $("input[name='netPrice']").length;
+			var tempNum = "";		
+			
+			for(i=0;i<size;i++){
+				tempNum = $("input[name='netPrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='netPrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='netPrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='salePrice']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='salePrice']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='salePrice']").eq(i).val(tempNum);
+				}
+				
+				tempNum = $("input[name='payment']").eq(i).val();
+				tempNum = replaceAll(tempNum, ",", "");
+				if ( !$.isNumeric(tempNum) ) {
+					$("input[name='payment']").eq(i).val("");
+				} else {
+					tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+					$("input[name='payment']").eq(i).val(tempNum);
+				}
+			}
+			break;
+		}
+		
+		
+	}
+</script>
+
+<body>
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+		<div th:replace="~{fragments/menu::menu}"></div>
+		<hr>
+			
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:replace="~{fragments/header::header}"></div>
+				<hr>
+				
+				<div align="center" layout:fragment="content" ></div>
+				<hr>
+				
+				<div th:replace="~{fragments/footer::footer}"></div>
+				<hr>
+			</div>		
+		</div>
+
+	</div>
+	<form id="logoutForm" action="logoutForm.html" th:action="@{/auth/logout}" method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+   </form> 
+   <script>
+		$("#logoutBtn").click(function() {
+			if( confirm("로그아웃 하시겠습니까?") ){
+				$("#logoutForm").submit();
+			}		
+		});
+	
+		// 슬라이드 버튼
+		$('#sidebarToggle').on('click', function () {
+			$(".slide-action").addClass("slide-left");
+			$(".slide-action").removeClass("slide-right");
+			$(".slide-action-logo").hide();
+			$('#burger').show();
+		});
+		
+		// burger 버튼
+		$('#burger').on('click', function () {
+			$(".slide-action").addClass("slide-right");
+			$(".slide-action").removeClass("slide-left");
+			$(".slide-action-logo").show();
+			$('#burger').hide();
+		});
+	</script>
+</body>
+</html>

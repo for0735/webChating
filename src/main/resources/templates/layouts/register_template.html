@@ -1,0 +1,278 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+   <title>Main</title>
+   <script src="/js/jQuery-2.1.4.min.js"></script>
+	<!--    <script src="/js/platform.js"></script> -->
+   
+	<!-- Custom styles for this template-->
+	<link href="../css/sb-admin-2.min.css" rel="stylesheet">
+	
+	<!-- Custom fonts for this template -->
+	<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	
+	<!-- Custom styles for this page -->
+	<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	
+	<!-- Bootstrap core JavaScript-->
+	<script src="/vendor/jquery/jquery.min.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+	
+	<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+  
+  
+</head>
+<style>
+	
+	.sheet-container{
+		
+	}
+	
+	.sheet-container .logo {
+		position: relative;	
+		height: 100px;
+	}
+	
+	.sheet-container .logo img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		top: 0px;
+		left: 15px;
+	}
+	
+	.sheet-container .logo h2 {
+		position: absolute;
+		top: 35%;
+		left: 50%;
+	}
+	
+	.flat-title {
+		
+	}
+	
+	.flat-title .search {
+		
+	}
+	
+	.flat-title .search select {
+		display: inline-block;
+	}
+	
+		
+	.slide-left {
+	width: 0px !important;
+	transition: 1s;
+	}
+	
+	.slide-right {
+		width: 100% !important;
+		transition: 1s;
+	}
+
+	.burger {
+		color: white; font-size:30px; cursor:pointer;
+		position: absolute;
+		left: 30px;
+		top: 15px;
+	}
+	
+</style>
+<script th:inline="javascript">
+   $(document).ready(function() {
+ 	  
+      var formObj = $("#member");
+      var list = new Array();
+      var menuSelect = document.getElementById("select_menu");
+      
+      $("input[name=i_Name]").each(function(index, item){
+   	 	list.push($(item).val());
+      });
+      
+      for(var i=0; i<list.length; i++){
+     	 $("#select_menu").prepend("<option value='+ list[i] +'>"+ list[i] +"</option>");
+    	 	//menuSelect.add(document.createElement("option"), null);
+  	 }
+      
+      $("input:checkbox").on('click', function(){
+     	 if ( $(this).prop('checked') ) {
+     		 $("#hiddenTd").show();
+     	 } else {
+     		$("#hiddenTd").hide();
+  			$('#id').attr("readonly", false);
+ 			$('#realName').attr("readonly", false);
+ 			$('#ctzNumber').attr("readonly", false);
+ 			$('#manager').attr("readonly", false);
+ 			$('#pw').attr("disabled", false);
+ 			$('#pw2').attr("disabled", false);
+ 			$('#id').attr("disabled", false);
+ 			$('#realName').attr("disabled", false);
+ 			$('#ctzNumber').attr("disabled", false);
+ 			$('#manager').attr("disabled", false);
+ 			$('#id').val("");
+			$('#realName').val("");
+			$('#ctzNumber').val("");
+			$('#manager').val("");
+     	 }
+      });
+
+     $("#btnRegister").on("click", function() {
+    	 if($('#id').val() == "" || $('#id').val() == "" || $('#pw').val() == "" || $('#author').val() == "" || $('#realName').val() == "" ){
+    		 alert("필수입력값을 입력해주세요. [아이디], [패스워드], [작가명], [본명]")
+    	 }
+    	 else{
+    		 if($('#pw').val() != $('#pw2').val()){
+    			 alert("패스워드가 서로 일치하지 않습니다");
+    		 }
+    		 else{
+    			 if($('#settlementRatio').val() == ""){
+    	        	 	$('#settlementRatio').val("0.0");
+    	        	}
+    	        	if($('#virtuousTax').val() == ""){
+    	        	 	$('#virtuousTax').val("0");
+    	        	}
+    	        	if($('#carryAmount').val() == ""){
+    	        	 	$('#carryAmount').val("0");
+    	        	}
+    	    		$('#pw').attr("disabled", false);
+    	    		$('#pw2').attr("disabled", false);
+    	    		$('#id').attr("disabled", false);
+    	    		$('#realName').attr("disabled", false);
+    	    		$('#ctzNumber').attr("disabled", false);
+    	    		$('#manager').attr("disabled", false);
+    	    		formObj.attr("method", "post");
+    	           	formObj.submit();
+    	           	
+    	           	alert("등록성공");
+    		 }
+        	
+    	 }
+    	 
+
+     });
+      
+   [#th:block sec:authorize="hasRole('ROLE_ADMIN')"]
+      $("#btnList").on("click", function() {
+         self.location = "list";
+      });
+   [/th:block]
+
+   });
+   
+   function selected(){
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		var memberId = "";
+		var memberRealName = "";
+		var memberCtzNumber = "";
+		var memberManager = "";
+		
+		console.log(token);
+		
+		$.ajax({
+			type:"post",
+			url:"/user/selected",
+			data:	{ 
+						"id"	: $("#select_menu option:selected").text()
+					},
+					
+			beforeSend : function(xhr) {   
+				// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+		               xhr.setRequestHeader( header, token );
+		           },
+			success:function(data){
+					memberId = data.member.id;
+					memberRealName = data.member.realName; 
+					memberCtzNumber = data.member.ctzNumber;
+					memberManager = data.member.manager;
+					
+					$('#id').val(memberId);
+					$('#realName').val(memberRealName);
+					$('#ctzNumber').val(memberCtzNumber);
+					$('#manager').val(memberManager);
+					// 기존아이디에 작가만 추가하는경우 패스워드 검사규칙에 의해서 서로 맞춰주기만함 
+					$('#pw').val("111111");
+					$('#pw2').val("111111");
+					
+					/*
+					if(textStatus){
+						alert("적용 되었습니다.");
+						location.href="/user/register"
+					}else{
+						alert("적용 실패");
+					}
+					*/
+			},
+		     error:function(request,status,error){
+		         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		    }
+
+		});
+		
+		$('#id').attr("readonly", true);
+		$('#realName').attr("readonly", true);
+		$('#ctzNumber').attr("readonly", true);
+		$('#manager').attr("readonly", true);
+		$('#pw').attr("disabled", true);
+		$('#pw2').attr("disabled", true);
+		$('#id').attr("disabled", true);
+		$('#realName').attr("disabled", true);
+		$('#ctzNumber').attr("disabled", true);
+		$('#manager').attr("disabled", true);
+   }
+</script>
+<body>
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+		<div th:replace="~{fragments/menu::menu}"></div>
+		<hr>
+			
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:replace="~{fragments/header::header}"></div>
+				<hr>
+				
+				<div align="center" layout:fragment="content" ></div>
+				<hr>
+				
+				<div th:replace="~{fragments/footer::footer}"></div>
+				<hr>
+			</div>		
+		</div>
+
+	</div>
+	<form id="logoutForm" action="logoutForm.html" th:action="@{/auth/logout}" method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+   </form> 
+   <script>
+		$("#logoutBtn").click(function() {
+			if( confirm("로그아웃 하시겠습니까?") ){
+				$("#logoutForm").submit();
+			}		
+		});
+	
+		// 슬라이드 버튼
+		$('#sidebarToggle').on('click', function () {
+			$(".slide-action").addClass("slide-left");
+			$(".slide-action").removeClass("slide-right");
+			$(".slide-action-logo").hide();
+			$('#burger').show();
+		});
+		
+		// burger 버튼
+		$('#burger').on('click', function () {
+			$(".slide-action").addClass("slide-right");
+			$(".slide-action").removeClass("slide-left");
+			$(".slide-action-logo").show();
+			$('#burger').hide();
+		});
+	</script>
+</body>
+</html>

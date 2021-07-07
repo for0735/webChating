@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.PaymentMapper">
+
+<select id="listPayment" resultType="com.eBook.mgr.dto.PaymentDto">
+	SELECT f.* 
+	FROM tb_finalsettlement f
+	INNER JOIN tb_author a on f.writer_id = a.writer_id
+	INNER JOIN member m  on a.id = m.id
+	INNER JOIN member_auth au on m.idx = au.idx
+	WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+	AND au.auth = 'ROLE_USER'
+	ORDER BY f.idx
+</select>
+
+<insert id="createPayment">
+	INSERT INTO tb_finalsettlement
+	            (
+	            author, 
+	             real_name, 
+	             ctz_number, 
+	             account_number, 
+	             pay_bookcube, 
+	             pay_epub,
+	             pay_joara, 
+	             pay_kakao, 
+	             pay_kyobo, 
+	             pay_mrblue, 
+	             pay_munpia, 
+	             pay_naver, 
+	             pay_ridibooks, 
+	             pay_romance, 
+	             pay_tocsoda, 
+	             pay_winstore, 
+	             pay_yes24, 
+	             pay_aladin, 
+	             all_payment, 
+	             settlement_ratio, 
+	             author_settlement, 
+	             carry_amount, 
+	             payment, 
+	             virtuous_tax, 
+	             income_tax, 
+	             wthld_tax, 
+	             author_paid, 
+	             writer_id, 
+	             set_date
+	             ) 
+		VALUES      
+				(
+				#{author},
+				#{realName},
+				#{ctzNumber},
+				#{accountNumber},
+				#{payBookcube},
+				#{payEpub},
+				#{payJoara},
+				#{payKakao},
+				#{payKyobo},
+				#{payMrblue},
+				#{payMunpia},
+				#{payNaver},
+				#{payRidibooks},
+				#{payRomance},
+				#{payTocsoda},
+				#{payWinstore},
+				#{payYes24},
+				#{payAladin},
+				#{allPayment},
+				#{settlementRatio},
+				#{authorSettlement},
+				#{carryAmount},
+				#{payment},
+				#{virtuousTax},
+				#{incomeTax},
+				#{wthldTax},
+				#{authorPaid},
+				#{writerId},
+				#{setDate}
+	             )
+</insert>
+
+<update id="modifyCarryAmount">
+	UPDATE tb_author
+	SET carry_amount = #{carryAmount}
+	WHERE writer_id = #{writerId}
+</update>
+
+<update id="modifyVirtuousTax">
+	UPDATE tb_author
+	SET virtuous_tax = '0'
+	WHERE writer_id = #{writerId}
+</update>
+
+<delete id="deleteList">
+	DELETE FROM tb_finalsettlement
+	WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</delete>
+
+
+<select id="writerIdList" resultType="String">
+	SELECT writer_id
+	FROM tb_author
+</select>
+
+
+<select id="bookcubePayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_bookcube
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="epubPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_epub
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="joaraPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_joara
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="kakaoPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_kakao
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="kyoboPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_kyobo
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="mrbluePayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_mrblue
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="munpiaPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_munpia
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="naverPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_naver
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="ridibooksPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_ridibooks
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="romancePayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_romance
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="tocsodaPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_tocsoda
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="winstorePayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_winstore
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="yes24Payment" resultType="String">
+	SELECT payment
+	FROM tb_platform_yes24
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+<select id="aladinPayment" resultType="String">
+	SELECT payment
+	FROM tb_platform_aladin
+	WHERE writer_id = #{writerId} and DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

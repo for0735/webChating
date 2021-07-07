@@ -1,0 +1,101 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layouts/dbSetting_template}"
+   >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+<title>DB파일세팅</title>
+</head>
+
+
+<body>
+<div layout:fragment="content">
+	<form id="platList" th:action="@{search}" method="POST">
+		<img src="/image/img_ongle_sub.png" style="width:200px;"><br></br>
+		
+		<table border="1">
+			<tr>
+				<th><h2>작업파일 다운로드</h2></th>
+				<th><h2>DB파일 업로드</h2></th>
+			</tr>
+			<tr>
+				<td align="center">북큐브 파일 : <input style="text-align: left;" type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>조아라 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>카카오 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>교보문고 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>미스터블루 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>문피아 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>네이버 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>리디북스 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>로망띠끄 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>톡소다 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>원스토어 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>예스24 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>알라딘 파일 : <input type="file" name="file" ></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td>이퍼브 파일 : <input type="file" name="file" ></td>
+				<td>정제파일첨부 : <input type="file" name="file" ></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+			</tr>
+			
+		</table>
+	</form>
+	<div>
+		<button type="submit" id="btnMissing" class="btn btn-primary mr-2">
+	  		<span class="icon text-white-50"><i class="fas fa-download"></i></span>
+			<span class="text">누락파일다운</span>
+		</button>
+   	    <button type="submit" id="btnDbUpload" class="btn btn-primary mr-2" data-toggle="modal" data-target="#myModal">
+	  		<span class="icon text-white-50"><i class="fas fa-upload"></i></span>
+	  		<span class="text">DB파일업로드</span>
+		</button>
+		<span>*모든데이터가 삭제되고 다시 쌓입니다.</span>
+	</div>
+</div>
+</body>
+</html>

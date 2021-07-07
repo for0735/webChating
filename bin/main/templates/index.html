@@ -1,0 +1,39 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layouts/main_template}"
+   >
+
+<head>
+<meta charset="UTF-8">
+<title>Main</title>
+</head>
+<body>
+<div layout:fragment="content">
+      <h1>온글미디어에 오신것을 환영합니다.</h1>
+      <p th:text="${serverTime}">시간 표시</p>
+      
+      <div align="left" style="padding-left: 30px; padding-bottom: 100px;">
+      	<h3><span style="align:left;">공지사항</span></h3>
+      	<table>
+			<tr>
+				<td>제목</td>
+				<td><input type="text" name="title" th:value="${main_title}" readonly="readonly" style="background-color: #e2e2e2;"/></td>
+			</tr>
+			<tr>
+				<td>내용</td>
+				<td><textarea name="content" th:text="${main_content}" readonly="readonly" style="background-color: #e2e2e2; width:300%;border:1;overflow:visible;text-overflow:ellipsis;" rows=20></textarea>
+				</td>
+			</tr>
+		</table>
+      </div>
+      
+      <ul sec:authorize="isAuthenticated()">
+         <!-- <li><span sec:authentication="principal.username">유저이름</span>님</li> -->
+         <li style="list-style:none;"><span th:text="${real_name}">유저이름</span>님</li>
+         <li style="list-style:none;"><a th:href="@{/auth/logout}">로그아웃</a></li>
+      </ul>
+      </div>
+</body>
+
+</html>

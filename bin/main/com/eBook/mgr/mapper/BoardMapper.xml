@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.BoardMapper">
+
+	<insert id="create">
+		INSERT INTO board
+		(
+			title,
+			content,
+			writer
+		)
+		VALUES
+		(
+			#{title},
+			#{content},
+			#{writer}
+		)
+	</insert>
+	
+	<select id="read" resultType="Board">
+		SELECT board_no,
+			title,
+			content,
+			writer,
+			reg_date
+		FROM board
+		WHERE board_no = #{boardNo}
+	</select>
+	
+	<select id="mainRead" resultType="Board">
+		SELECT *
+		FROM board
+		WHERE use_update = "Y"
+		LIMIT 1
+	</select>
+	
+	<update id="update">
+		UPDATE board
+		SET title = #{title},
+			content = #{content}
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM board
+		WHERE board_no = #{boardNO}
+	</delete>
+	
+	<select id="list" resultType="Board"> 
+	<![CDATA[
+		SELECT *
+		FROM board
+		WHERE board_no > 0
+		ORDER BY board_no DESC,
+			reg_date DESC
+	]]>
+	</select>
+	
+	<select id="search" resultType="Board">
+	<![CDATA[
+		SELECT board_no,
+			title,
+			content,
+			writer,
+			reg_date
+		FROM board
+		WHERE board_no > 0 
+		]]>
+		<if test="title != null and title != ''">
+			AND title LIKE CONCAT('%', #{title}, '%')
+		</if>
+		ORDER BY board_no DESC,
+			reg_date DESC
+	</select>
+	
+	<update id="delete_use">
+		UPDATE board
+		SET use_update = ""
+	</update>
+	
+	<update id="select_use">
+		UPDATE board
+		SET use_update = "Y"
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<select id="lastNumber" resultType="int">
+		SELECT board_no
+		FROM board
+		ORDER BY board_no DESC
+		LIMIT 1
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

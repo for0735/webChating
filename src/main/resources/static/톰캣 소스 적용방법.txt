@@ -1,0 +1,17 @@
+
+※ 프로젝트 경로 : /usr/local/tomcat/webapps/ROOT
+
+※ Tomcat shutdown 하기
+1. cd ..  엔터
+2. cd /usr/local/tomcat/bin 이동 후 ./shutdown.sh 입력 (앞에 ./ 붙어야함)
+3. ps -ef|grep tomcat 입력하여 톰캣이 정상적으로 종료 되었는지 확인 후 소스 반영
+
+※ Tomcat startup 하기 (현재 서버에는 톰캣 자동 시작 설정을 해놔서 불필요함)
+1. cd /usr/local/tomcat/bin 이동 후 ./startup.sh 입력 (앞에 ./ 붙어야함)
+2. ps -ef|grep tomcat 입력하여 톰캣이 정상적으로 실행 되었는지 확인함
+
+※ 로그 기록 보기
+1. 해당 서버에 대한 터미널 하나 오픈
+2. cd ..  엔터
+3. cd /usr/local/tomcat/logs 이동 후
+tail -f catalina.out 입력하면 실시간으로 로그기록 확인 가능.

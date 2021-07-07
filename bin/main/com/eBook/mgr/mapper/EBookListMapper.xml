@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.EBookListMapper">
+
+	<resultMap type="Kakao" id="KakaoMap">
+		<result property="idx" column="idx" />
+		<result property="brand" column="brand" />
+		<result property="specialGeneral2" column="special_general_2" />
+		<result property="entrepreneur" column="entrepreneur" />
+		<result property="entrepreneurId" column="entrepreneur_id" />
+		<result property="publisher" column="publisher" />
+		<result property="contractUid" column="contract_uid" />
+		<result property="contractCategory" column="contract_category" />
+		<result property="contract" column="contract" />
+		<result property="newContract" column="new_contract" />
+		<result property="category" column="category" />
+		<result property="seriesId" column="series_id" />
+		<result property="productName" column="product_name" />
+		<result property="productCode" column="product_code" />
+		<result property="lable" column="lable" />
+		<result property="author" column="author" />
+		<result property="isIsbn" column="is_isbn" />
+		<result property="cpSettlementRateAndroid" column="cp_settlement_rate_android" />
+		<result property="cpSettlementRateIos" column="cp_settlement_rate_ios" />
+		<result property="useTicketType" column="use_ticket_type" />
+		<result property="useTicketAmount" column="use_ticket_amount" />
+		<result property="cacheSum" column="cache_sum" />
+		<result property="cpp1" column="cpp_1" />
+		<result property="cpl1" column="cpl_1" />
+		<result property="cp1_1" column="cp1_1" />
+		<result property="cp2_1" column="cp2_1" />
+		<result property="cp3_1" column="cp3_1" />
+		<result property="cp7_1" column="cp7_1" />
+		<result property="cp8_1" column="cp8_1" />
+		<result property="cp9_1" column="cp9_1" />
+		<result property="eventCache1" column="event_cache_1" />
+		<result property="originalSum" column="original_sum" />
+		<result property="cpp2" column="cpp_2" />
+		<result property="cpl2" column="cpl_2" />
+		<result property="cp1_2" column="cp1_2" />
+		<result property="cp2_2" column="cp2_2" />
+		<result property="cp3_2" column="cp3_2" />
+		<result property="cp7_2" column="cp7_2" />
+		<result property="cp8_2" column="cp8_2" />
+		<result property="cp9_2" column="cp9_2" />
+		<result property="eventCache2" column="event_cache_2" />
+		<result property="valueSupply" column="value_supply" />
+		<result property="taxAmount" column="tax_amount" />
+		<result property="payment" column="payment" />
+		<result property="writerId" column="writer_id" />
+		<result property="setDate" column="set_date" />
+	</resultMap>
+	
+	<select id="listBookcube" resultType="Bookcube"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_bookcube
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	 
+	<select id="listEpub" resultType="Epub"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_epub
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	
+	<select id="listJoara" resultType="Joara"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_joara
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listKakao" resultMap="KakaoMap"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_kakao
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listkyobo" resultType="kyobo"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_kyobo
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listMrblue" resultType="Mrblue"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_mrblue
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listMunpia" resultType="Munpia"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_munpia
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listNaver" resultType="Naver"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_naver
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listRidibooks" resultType="Ridibooks"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_ridibooks
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listRomance" resultType="Romance"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_romance
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listTocsoda" resultType="Tocsoda"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_tocsoda
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+		
+	<select id="listWinstore" resultType="Winstore"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_winstore
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+	
+	<select id="listAladin" resultType="Aladin"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_aladin
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+		
+	<select id="listYes24" resultType="Yes24"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_yes24
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		ORDER BY idx
+	]]>
+	</select>
+</mapper>

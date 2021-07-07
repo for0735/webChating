@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.AuthMapper">
+
+	<resultMap type="com.eBook.mgr.dto.AuthorListDto" id="AuthorDto">
+		<result property="idx" column="idx" />
+		<result property="writerId" column="writer_id" />
+		<result property="id" column="id" />
+		<result property="author" column="author" />
+		<result property="realName" column="real_name" />
+		<result property="accountNumber" column="account_number" />
+		<result property="ctzNumber" column="ctz_number" />
+		<result property="virtuousTax" column="virtuous_tax" />
+		<result property="loginStatus" column="login_status" />
+		<result property="settlementRatio" column="settlement_ratio" />
+		<result property="carryAmount" column="carry_amount" />
+		<result property="manager" column="manager" />
+		<result property="regDate" column="reg_date" />
+		<result property="updDate" column="upd_date" />
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+
+	<resultMap type="MemberAuth" id="authMap">
+		<result property="idx" column="idx" />
+		<result property="auth" column="auth" />
+	</resultMap>
+	
+	
+
+	<select id="authRoll" resultType="String">
+		SELECT auth
+		FROM member mem LEFT OUTER JOIN member_auth auth ON mem.idx = auth.idx
+		WHERE mem.id = #{id}	
+	</select>
+	
+	<select id="list" resultMap="AuthorDto">
+		SELECT mem.idx,
+			author.writer_id,
+			mem.id,
+			author.author,
+			mem.real_name,
+			author.account_number,
+			mem.ctz_number,
+			author.virtuous_tax,
+			mem.login_status,
+			author.settlement_ratio,
+			mem.manager
+		FROM member mem INNER JOIN tb_author author
+		ON mem.id = author.id
+		WHERE mem.id = #{id}
+	</select>
+	
+	<select id="listPayment" resultType="com.eBook.mgr.dto.PaymentDto">
+		SELECT * 
+		FROM tb_finalsettlement
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	</select>
+	
+	<select id="listWriterId" resultType="String">
+		SELECT writer_id
+		FROM tb_author
+		WHERE id = #{id}
+	</select>
+	
+	
+	
+	
+	<select id="listBookcube" resultType="Bookcube"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_bookcube
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listEpub" resultType="Epub"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_epub
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listJoara" resultType="Joara"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_joara
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listKakao" resultType="Kakao"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_kakao
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listkyobo" resultType="kyobo"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_kyobo
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listMrblue" resultType="Mrblue"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_mrblue
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listMunpia" resultType="Munpia"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_munpia
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listNaver" resultType="Naver"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_naver
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listRidibooks" resultType="Ridibooks"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_ridibooks
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listRomance" resultType="Romance"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_romance
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listTocsoda" resultType="Tocsoda"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_tocsoda
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+		
+	<select id="listWinstore" resultType="Winstore"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_winstore
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+	
+	<select id="listAladin" resultType="Aladin"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_aladin
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+		
+	<select id="listYes24" resultType="Yes24"> 
+	<![CDATA[
+		SELECT *
+		FROM tb_platform_yes24
+		WHERE DATE(set_date) LIKE CONCAT(#{setDate}, '%')
+		AND writer_id = #{writerId}
+	]]>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

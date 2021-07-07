@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.MemberMapper">
+
+	<resultMap type="Member" id="memberMap">
+		<id property="idx" column="idx" />
+		<result property="idx" column="idx" />
+		<result property="id" column="id" />
+		<result property="pw" column="pw" />
+		<result property="author" column="author" />
+		<result property="realName" column="real_name" />
+		<result property="accountNumber" column="account_number" />
+		<result property="ctzNumber"
+			column="ctz_number" />
+		<result property="virtuousTax" column="virtuous_tax" />
+		<result property="loginStatus" column="login_status" />
+		<result property="auth" column="auth" />
+		<result property="settlementRatio" column="settlement_ratio" />
+		<result property="regDate" column="reg_date" />
+		<result property="updDate" column="upd_date" />
+		<result property="writerId" column="writer_id" />
+		<result property="manager" column="manager" />
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.eBook.mgr.dto.AuthorListDto" id="AuthorDto">
+		<result property="idx" column="idx" />
+		<result property="writerId" column="writer_id" />
+		<result property="id" column="id" />
+		<result property="author" column="author" />
+		<result property="realName" column="real_name" />
+		<result property="accountNumber" column="account_number" />
+		<result property="ctzNumber" column="ctz_number" />
+		<result property="virtuousTax" column="virtuous_tax" />
+		<result property="loginStatus" column="login_status" />
+		<result property="settlementRatio" column="settlement_ratio" />
+		<result property="carryAmount" column="carry_amount" />
+		<result property="manager" column="manager" />
+		<result property="regDate" column="reg_date" />
+		<result property="updDate" column="upd_date" />
+		<collection property="authList" resultMap="authMap">
+		</collection>
+	</resultMap>
+
+	<resultMap type="MemberAuth" id="authMap">
+		<result property="idx" column="idx" />
+		<result property="auth" column="auth" />
+	</resultMap>
+
+	<insert id="createMember">
+		INSERT INTO member
+		(
+			id,
+			pw,
+			real_name,
+			ctz_number,
+			manager
+		)
+		VALUES
+		(
+			#{id},
+			#{pw},
+			#{realName},
+			#{ctzNumber},
+			#{manager}
+		)
+	</insert>
+	
+	<!-- 
+	<insert id="createAuthor">	
+		<![CDATA[	
+		INSERT INTO tb_author
+		(
+			id,
+			writer_id,
+			author,
+			account_number,
+			virtuous_tax,
+			settlement_ratio,
+			carry_amount
+		)
+		SELECT
+			#{id},
+			CONCAT('','au-',LPAD(COUNT(*)+1,3,'0')),
+			#{author},
+			#{accountNumber},
+			#{virtuousTax},
+			#{settlementRatio},
+			#{carryAmount}
+		FROM tb_author
+		]]>
+	</insert>
+	 -->
+	
+	<insert id="createAuthor">	
+		<![CDATA[	
+		INSERT INTO tb_author
+		(
+			id,
+			writer_id,
+			author,
+			account_number,
+			virtuous_tax,
+			settlement_ratio,
+			carry_amount
+		)
+		VALUES (
+			#{id},
+			CONCAT('au-',  (SELECT get_seq('authorSeq')) ),
+			#{author},
+			#{accountNumber},
+			#{virtuousTax},
+			#{settlementRatio},
+			#{carryAmount}
+		)
+		
+		]]>
+	</insert>
+	
+	<update id="updateMember">
+		UPDATE member
+			<choose>
+				<when test="pw != 'null'">
+					SET real_name = #{realName},
+					ctz_number = #{ctzNumber},
+					manager = #{manager},
+					pw = #{pw}
+				</when>
+				<otherwise>
+					SET real_name = #{realName},
+					ctz_number = #{ctzNumber},
+					manager = #{manager}
+				</otherwise>
+			</choose>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateAuthor">
+		UPDATE tb_author
+		SET author = #{author},
+			account_number = #{accountNumber},
+			virtuous_tax = #{virtuousTax},
+			settlement_ratio = #{settlementRatio},
+			carry_amount = #{carryAmount}
+		WHERE writer_id = #{writerId}
+	</update>
+	
+	
+	<delete id="deleteMember">
+		DELETE FROM member
+		WHERE id = #{id}
+	</delete>
+	
+	<delete id="deleteAuthor">
+		DELETE FROM tb_author
+		WHERE writer_id = #{writerId}
+	</delete>
+	
+	<select id="readId" resultType="String">
+		SELECT id
+		FROM tb_author
+		WHERE id = #{id}
+	</select>
+	
+	<select id="readWriterId" resultType="String">
+		SELECT id
+		FROM tb_author
+		WHERE writer_id = #{writerId}
+	</select>
+	
+	<update id="useLogin">
+		UPDATE member
+		SET login_status = 1
+		WHERE id = #{id}
+	</update>
+	
+	<update id="unUseLogin">
+		UPDATE member
+		SET login_status = 0
+		WHERE id = #{id}
+	</update>
+	
+	<select id="readStatus" resultType="String">
+		SELECT login_status
+		FROM member
+		WHERE id = #{id}
+	</select>
+	
+	
+
+	<insert id="createAuth">
+		INSERT INTO member_auth
+		(
+			idx,
+			auth
+		)
+		VALUES
+		(
+			#{idx},
+			#{auth}
+		)
+	</insert>
+
+	<select id="readByUserId" resultMap="memberMap">
+		SELECT mem.idx,
+			mem.id,
+			pw,
+			real_name,
+			login_status,
+			reg_date,
+			upd_date,
+			auth
+		FROM member mem LEFT OUTER JOIN member_auth auth ON mem.idx = auth.idx
+		WHERE mem.id = #{id}
+	</select>
+
+	<select id="list" resultMap="AuthorDto">
+		SELECT mem.idx,
+			author.writer_id,
+			mem.id,
+			author.author,
+			mem.real_name,
+			author.account_number,
+			mem.ctz_number,
+			author.virtuous_tax,
+			mem.login_status,
+			author.settlement_ratio,
+			mem.manager
+		FROM member mem INNER JOIN tb_author author
+		ON mem.id = author.id
+	</select>
+	
+	<select id="listId" resultType="String">
+		SELECT id
+		FROM member
+	</select>
+		
+	<select id="listMember" resultType="com.eBook.mgr.domain.Member">
+		SELECT *
+		FROM member
+		WHERE id = #{id}
+	</select>
+	
+	<select id="findRealName" resultType="String">
+		SELECT real_name
+		FROM member
+		WHERE id = #{id}
+	</select>
+
+	<select id="read" resultMap="memberMap">
+		SELECT mem.idx,
+			mem.id,
+			pw,
+			real_name,
+			reg_date,
+			upd_date,
+			auth
+		FROM member mem LEFT OUTER JOIN member_auth auth
+		ON mem.idx = auth.idx
+		WHERE mem.id = #{id}
+	</select>
+
+
+	<select id="findId" parameterType="String" resultType="boolean">
+	   select if(count(*) > 0, 'true', 'false')
+	   from member where id = #{id, jdbcType=VARCHAR}
+	</select>
+
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+

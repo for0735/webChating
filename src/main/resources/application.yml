@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ebook?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: jjh0735!!
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:15212/ebook?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false
+#    username: root
+#    password: ongeul569!!
+#
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mappers/**/*.xml
+
+# upload.path=C:/upload
+#upload.path: /usr/local/tomcat/webapps/upload/
+upload.path: C:/ALOHA_CAMPUS/workspace/LOGIN/eBook/src/main/resources/upload

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.EBookDeleteMapper">
+	
+	<delete id="deleteBookcube">
+		DELETE FROM tb_platform_bookcube
+		WHERE idx = #{idx}
+	</delete>
+
+ 
+	<delete id="deleteEpub">
+		DELETE FROM tb_platform_epub
+		WHERE idx = #{idx}
+	</delete>
+
+ 
+	<delete id="deleteJoara">
+		DELETE FROM tb_platform_joara
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteKakao">
+		DELETE FROM tb_platform_kakao
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteKyobo">
+		DELETE FROM tb_platform_kyobo
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteMrblue">
+		DELETE FROM tb_platform_mrblue
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteMunpia">
+		DELETE FROM tb_platform_munpia
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteNaver">
+		DELETE FROM tb_platform_naver
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteRidibooks">
+		DELETE FROM tb_platform_ridibooks
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteRomance">
+		DELETE FROM tb_platform_romance
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteTocsoda">
+		DELETE FROM tb_platform_tocsoda
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteWinstore">
+		DELETE FROM tb_platform_winstore
+		WHERE idx = #{idx}
+	</delete>
+	
+	<delete id="deleteAladin">
+		DELETE FROM tb_platform_aladin
+		WHERE idx = #{idx}
+	</delete>
+
+	<delete id="deleteYes24">
+		DELETE FROM tb_platform_yes24
+		WHERE idx = #{idx}
+	</delete>
+	
+	
+	
+	
+	<delete id="allDeleteBookcube">
+		DELETE FROM tb_platform_bookcube
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteEpub">
+		DELETE FROM tb_platform_epub
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteJoara">
+		DELETE FROM tb_platform_joara
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteKakao">
+		DELETE FROM tb_platform_kakao
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteKyobo">
+		DELETE FROM tb_platform_kyobo
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteMrblue">
+		DELETE FROM tb_platform_mrblue
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteMunpia">
+		DELETE FROM tb_platform_munpia
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteNaver">
+		DELETE FROM tb_platform_naver
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteRidibooks">
+		DELETE FROM tb_platform_ridibooks
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteRomance">
+		DELETE FROM tb_platform_romance
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteTocsoda">
+		DELETE FROM tb_platform_tocsoda
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteWinstore">
+		DELETE FROM tb_platform_winstore
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteAladin">
+		DELETE FROM tb_platform_aladin
+		WHERE set_date = #{setDate}
+	</delete>
+	
+	<delete id="allDeleteYes24">
+		DELETE FROM tb_platform_yes24
+		WHERE set_date = #{setDate}
+	</delete>
+	
+</mapper>

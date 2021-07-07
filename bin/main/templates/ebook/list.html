@@ -1,0 +1,1220 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{/layouts/platform_template}"
+   >
+<head>
+<meta charset="UTF-8">
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+<title>조회</title>
+<style>
+	.upload-modal {
+		width: 100%;
+	    height: 150%;
+	    background-color: rgba(100,100,100,0.8);
+	    position: absolute;
+	    top: 0px;
+	    left: 0px;
+	    z-index: 1050;
+	    padding-top: 10%;
+	    
+	}
+</style>
+<script>
+		$("document").ready(function(){
+			
+
+			$(".upload-modal").css("display","none");
+			$("#uploadBtn").click(function() {
+				$(".upload-modal").css("display","block");
+			});
+			
+			$(".closeBtn").click(function() {
+				$(".upload-modal").css("display","none");
+			});
+			
+		});
+</script>
+</head>
+
+<body>
+<div layout:fragment="content">
+	<form id="platList" th:action="@{search}" method="POST">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+		<input id="nowDate" name="nowDate" type="hidden" th:value="${setDate}"/>
+		<input id="p_type" name="p_type" type="hidden" th:value="${platformType}"/>
+		<div class="sheet-container"> 
+			<div class="flat-title">
+				<div class="search">
+					<select id="selete_year" name="p_year" class="form-control w-25" >
+						<option value="" selected>연도</option>
+					</select>&nbsp;
+					<select id="selete_month" name="p_month" class="form-control w-25" >
+						<option value="" selected>월</option>
+						<option value="01월">1월</option>
+						<option value="02월">2월</option>
+						<option value="03월">3월</option>
+						<option value="04월">4월</option>
+						<option value="05월">5월</option>
+						<option value="06월">6월</option>
+						<option value="07월">7월</option>
+						<option value="08월">8월</option>
+						<option value="09월">9월</option>
+						<option value="10월">10월</option>
+						<option value="11월">11월</option>
+						<option value="12월">12월</option>
+					</select>
+					<button type="submit" id="btnSelect" class="btn btn-success ">
+						<span class="icon text-white-50">
+			                    <i class="fas fa-check"></i>
+			                    </span>
+						<span class="text">조회</span>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div id="bookcubeId" style="display:none" >
+			<div class="sheet-container">
+				<div class="logo">
+					<img src="/image/bookcube.png">
+					<h2></h2>
+				</div>
+				<div style="overflow:scroll; height:500px;">
+				<div class="card-body">
+					<table border="1">
+						<tr>
+							<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+							<th align="center">제목</th>
+							<th align="center" width="">저자</th>
+							<th align="center">출판권자</th>
+							<th align="center">판매처</th>
+							<th align="center">판매유형</th>
+							<th align="center">부수</th>
+							<th align="center">정가</th>
+							<th align="center">판매액</th>
+							<th align="center">할인</th>
+							<th align="center">수수료</th>
+							<th align="center">정산대상금액</th>
+							<th align="center">적립금이벤트차감</th>
+							<th align="center">정산액</th>
+							<th align="center">북넘버</th>
+							<th align="center">isbn</th>
+							<th align="center">e-ISBN(PDF)</th>
+							<th align="center">e_ISBN(ePub)</th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(listBookcube)}">
+							<td colspan="18">
+								데이터가 없습니다.
+							</td>
+						</tr>
+						<tr th:each="board : ${listBookcube}"  >
+							<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+							<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+							<td><input style="width:80px" type="text" name="author" th:value="${board.author}"/></td>
+							<td><input style="width:80px" type="text" name="brand" th:value="${board.brand}"/></td>
+							<td><input style="width:80px" type="text" name="salesCategory" th:value="${board.salesCategory}"/></td>
+							<td><input style="width:80px" type="text" name="salesType" th:value="${board.salesType}"/></td>
+							<td><input style="width:80px" type="text" name="episode" th:value="${board.episode}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="netPrice" th:value="${board.netPrice}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="salePrice" th:value="${board.salePrice}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="discount" th:value="${board.discount}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="fee" th:value="${board.fee}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="netTargetPrice" th:value="${board.netTargetPrice}"/></td>
+							<td><input style="width:100px" type="text" name="deductionReservesEvent" th:value="${board.deductionReservesEvent}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/></td>
+							<td><input style="width:100px" type="text" name="bookId" th:value="${board.bookId}"/></td>
+							<td><input style="width:100px" type="text" name="isbn" th:value="${board.isbn}"/></td>
+							<td><input style="width:100px" type="text" name="eIsbn" th:value="${board.eIsbn}"/></td>
+							<td><input style="width:100px" type="text" name="eIsbnEpub" th:value="${board.eIsbnEpub}"/>
+							<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+							<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+						</tr>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="epubId" style="display:none" >
+			<div class="sheet-container">
+				<div class="logo">
+					<img src="/image/epub.png">
+					<h2></h2>
+				</div>
+				<div style="overflow:scroll; height:500px;">
+				<div class="card-body">
+					<table border="1">
+						<tr>
+							<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+							<th align="center">번호</th>
+							<th align="center">출판권자</th>
+							<th align="center" width="">도서명</th>
+							<th align="center">출판사</th>
+							<th align="center">출판사판매가</th>
+							<th align="center">판매서점</th>
+							<th align="center">서점판매가</th>
+							<th align="center">서점환불가</th>
+							<th align="center">원가율</th>
+							<th align="center">출판사정산액</th>
+							<th align="center">이벤트구분</th>
+							<th align="center">판매구분</th>
+							<th align="center">이벤트판매가</th>
+							<th align="center">작가명</th>
+							<th align="center">ePubID</th>
+							<th align="center">세트코드</th>
+							<th align="center">종이책ISBN</th>
+							<th align="center">전자책ISBN</th>
+							<th align="center">판매일</th>
+							<th align="center">환불일</th>
+						</tr>
+						<tr th:if="${#lists.isEmpty(listEpub)}">
+							<td colspan="100">
+								데이터가 없습니다.
+							</td>
+						</tr>
+						<tr th:each="board : ${listEpub}"  >
+							<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+							<td><input style="width:80px" type="text" name="indexNum" th:value="${board.indexNum}"/></td>
+							<td><input style="width:80px" type="text" name="brand" th:value="${board.brand}"/></td>
+							<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+							<td><input style="width:80px" type="text" name="publisher" th:value="${board.publisher}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="publisherAmount" th:value="${board.publisherAmount}"/></td>
+							<td><input style="width:80px" type="text" name="sales" th:value="${board.sales}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="salesAmount" th:value="${board.salesAmount}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="cencelsAmount" th:value="${board.cencelsAmount}"/></td>
+							<td><input style="width:80px" type="text" name="costRate" th:value="${board.costRate}"/></td>
+							<td><input style="width:80px" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/></td>
+							<td><input style="width:80px" type="text" name="eventType" th:value="${board.eventType}"/></td>
+							<td><input style="width:80px" type="text" name="salesType" th:value="${board.salesType}"/></td>
+							<td><input style="width:80px" type="text" name="eventAmount" th:value="${board.eventAmount}"/></td>
+							<td><input style="width:100px" type="text" name="author" th:value="${board.author}"/></td>
+							<td><input style="width:80px" type="text" name="epubid" th:value="${board.epubid}"/></td>
+							<td><input style="width:100px" type="text" name="setCode" th:value="${board.setCode}"/></td>
+							<td><input style="width:100px" type="text" name="paperbookIsbn" th:value="${board.paperbookIsbn}"/></td>
+							<td><input style="width:100px" type="text" name="ebookIsbn" th:value="${board.ebookIsbn}"/></td>
+							<td><input style="width:100px" type="text" name="salseDate" th:value="${board.salseDate}"/>
+							<td><input style="width:100px" type="text" name="cencelsDate" th:value="${board.cencelsDate}"/>
+							<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+							<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+						</tr>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="joaraId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/joara.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">		
+				<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">브랜드</th>
+					<th align="center">작품명</th>
+					<th align="center">작품코드</th>
+					<th align="center">작가명</th>
+					<th align="center">단가</th>
+					<th align="center">판매건수</th>
+					<th align="center">비율</th>
+					<th align="center">정산금액</th>
+					<th align="center">정산일</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listJoara)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listJoara}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" type="text" name="brand" th:value="${board.brand}"/></td>
+					<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+					<td><input style="" type="text" name="productCode" th:value="${board.productCode}"/></td>
+					<td><input style="" type="text" name="author" th:value="${board.author}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="unit" th:value="${board.unit}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="saleAmount" th:value="${board.saleAmount}"/></td>
+					<td><input style="" type="text" name="ratio" th:value="${board.ratio}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/></td>
+					<td><input style="" type="text" name="paymentDate" th:value="${board.paymentDate}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+		</div>
+		</div>		
+		
+		<div id="kakaoId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/kakao.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">	
+			<table border="1">
+				<tr>
+					<th align="center" colspan="21">기초정보</th>
+					<th align="center" colspan="10">거래현황(캐시)</th>
+					<th align="center" colspan="10">거래금액(원화)</th>
+					<th align="center" colspan="3">CP</th>
+				</tr>
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">브랜드</th>
+					<th align="center">특별/일반</th>
+					<th align="center">사업자명</th>
+					<th align="center">사업자번호</th>
+					<th align="center">발행자명</th>
+					<th align="center">계약UID</th>
+					<th align="center">계약유형</th>
+					<th align="center">계약(과/면세)</th>
+					<th align="center">당월신규계약여부</th>
+					<th align="center">카테고리</th>
+					<th align="center">시리즈ID</th>
+					<th align="center">시리즈명</th>
+					<th align="center">제품코드(발행자가 부여하는 코드)	레이블</th>
+					<th align="center">레이블</th>
+					<th align="center">작가명</th>
+					<th align="center">ISBN(유/무)</th>
+					<th align="center">CP정산율_안드로이드/이벤트캐시</th>
+					<th align="center">CP정산율_iOS</th>
+					<th align="center">이용권 종류</th>
+					<th align="center">이용권 금액</th>
+					<th align="center">캐시합계</th>
+					<th align="center">CPP</th>
+					<th align="center">CPI</th>
+					<th align="center">CP1</th>
+					<th align="center">CP3</th>
+					<th align="center">CP4</th>
+					<th align="center">CP7</th>
+					<th align="center">CP8</th>
+					<th align="center">CP9</th>
+					<th align="center">이벤트캐시</th>
+					<th align="center">원화합계</th>
+					<th align="center">CPP</th>
+					<th align="center">CPI</th>
+					<th align="center">CP1</th>
+					<th align="center">CP2</th>
+					<th align="center">CP3</th>
+					<th align="center">CP7</th>
+					<th align="center">CP8</th>
+					<th align="center">CP9</th>
+					<th align="center">이벤트캐시</th>
+					<th align="center">공급가액</th>
+					<th align="center">세액</th>
+					<th align="center">합계금액</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listKakao)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listKakao}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" type="text" name="brand" th:value="${board.brand}"/></td>
+					<td><input style="" type="text" name="specialGeneral2" th:value="${board.specialGeneral2}"/></td>
+					<td><input style="" type="text" name="entrepreneur" th:value="${board.entrepreneur}"/></td>
+					<td><input style="" type="text" name="entrepreneurId" th:value="${board.entrepreneurId}"/></td>
+					<td><input style="" type="text" name="publisher" th:value="${board.publisher}"/></td>
+					<td><input style="" type="text" name="contractUid" th:value="${board.contractUid}"/></td>
+					<td><input style="" type="text" name="contractCategory" th:value="${board.contractCategory}"/></td>
+					<td><input style="" type="text" name="contract" th:value="${board.contract}"/></td>
+					<td><input style="" type="text" name="newContract" th:value="${board.newContract}"/></td>
+					<td><input style="" type="text" name="category" th:value="${board.category}"/></td>
+					<td><input style="" type="text" name="seriesId" th:value="${board.seriesId}"/></td>
+					<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+					<td><input style="" type="text" name="productCode" th:value="${board.productCode}"/></td>
+					<td><input style="" type="text" name="lable" th:value="${board.lable}"/></td>
+					<td><input style="" type="text" name="author" th:value="${board.author}"/></td>
+					<td><input style="" type="text" name="isIsbn" th:value="${board.isIsbn}"/></td>
+					<td><input style="" type="text" name="cpSettlementRateAndroid" th:value="${board.cpSettlementRateAndroid}"/></td>
+					<td><input style="" type="text" name="cpSettlementRateIos" th:value="${board.cpSettlementRateIos}"/></td>
+					<td><input style="" type="text" name="useTicketType" th:value="${board.useTicketType}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="useTicketAmount" th:value="${board.useTicketAmount}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cacheSum" th:value="${board.cacheSum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cpp1" th:value="${board.cpp1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cpl1" th:value="${board.cpl1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp1_1" th:value="${board.cp1_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp2_1" th:value="${board.cp2_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp3_1" th:value="${board.cp3_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp7_1" th:value="${board.cp7_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp8_1" th:value="${board.cp8_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp9_1" th:value="${board.cp9_1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="eventCache1" th:value="${board.eventCache1}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="originalSum" th:value="${board.originalSum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cpp2" th:value="${board.cpp2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cpl2" th:value="${board.cpl2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp1_2" th:value="${board.cp1_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp2_2" th:value="${board.cp2_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp3_2" th:value="${board.cp3_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp7_2" th:value="${board.cp7_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp8_2" th:value="${board.cp8_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="cp9_2" th:value="${board.cp9_2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="eventCache2" th:value="${board.eventCache2}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="valueSupply" th:value="${board.valueSupply}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="taxAmount" th:value="${board.taxAmount}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>		
+
+		<div id="kyoboId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/kyobo.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">브랜드</th>
+					<th align="center">판매구분</th>
+					<th align="center">판매형태</th>
+					<th align="center">상품</th>
+					<th align="center">대분류</th>
+					<th align="center">도서바코드</th>
+					<th align="center">ISBN</th>
+					<th align="center">EPUB ISBN</th>
+					<th align="center">PDF ISBN</th>
+					<th align="center">상품명</th>
+					<th align="center">회차명</th>
+					<th align="center">저자명</th>
+					<th align="center">정가</th>
+					<th align="center">판매가</th>
+					<th align="center">판매량</th>
+					<th align="center">다운로드수</th>
+					<th align="center">정산대상판매가</th>
+					<th align="center">정산대상판매총액</th>
+					<th align="center">지불액</th>
+					<th align="center">정산율(%)</th>
+					<th align="center">북넘버</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listKyobo)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listKyobo}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" type="text" name="brand" th:value="${board.brand}"/></td>
+					<td><input style="" type="text" name="salesCategory" th:value="${board.salesCategory}"/></td>
+					<td><input style="" type="text" name="salesType" th:value="${board.salesType}"/></td>
+					<td><input style="" type="text" name="product" th:value="${board.product}"/></td>
+					<td><input style="" type="text" name="mainSection" th:value="${board.mainSection}"/></td>
+					<td><input style="" type="text" name="bookBarcode" th:value="${board.bookBarcode}"/></td>
+					<td><input style="" type="text" name="isbn" th:value="${board.isbn}"/></td>
+					<td><input style="" type="text" name="epubIsbn" th:value="${board.epubIsbn}"/></td>
+					<td><input style="" type="text" name="pdfIsbn" th:value="${board.pdfIsbn}"/></td>
+					<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+					<td><input style="" type="text" name="episode" th:value="${board.episode}"/></td>
+					<td><input style="" type="text" name="author" th:value="${board.author}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="netPrice" th:value="${board.netPrice}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="salePrice" th:value="${board.salePrice}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="saleRate" th:value="${board.saleRate}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="download" th:value="${board.download}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="netTargetPrice" th:value="${board.netTargetPrice}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="netTargetPriceAmount" th:value="${board.netTargetPriceAmount}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/></td>
+					<td><input style="" type="text" name="accountingRates" th:value="${board.accountingRates}"/></td>
+					<td><input style="" type="text" name="bookNumber" th:value="${board.bookNumber}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="mrblueId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/mrblue.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th rowspan="5"><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center" rowspan="5">브랜드</th>
+					<th align="center" rowspan="5">일자</th>
+					<th align="center" rowspan="5">작품명</th>
+					<th align="center" rowspan="5">작가명</th>
+					<th align="center" rowspan="5">코드</th>
+					<th align="center" colspan="31">매출구분</th>
+					<th align="center" colspan="2">소    계</th>
+				</tr>
+				<tr>
+					<th align="center" colspan="3" rowspan="3">정액</th>
+					<th align="center" colspan="28">종량</th>
+					<th align="center" rowspan="4">매출액</th>
+					<th align="center" rowspan="4">정산액</th>
+				</tr>
+				<tr>
+					<th align="center" colspan="12">블루머니 + A.앱머니</th>
+					<th align="center" colspan="12">I.앱머니</th>
+					<th align="center" colspan="4" rowspan="2">계</th>
+				</tr>
+				<tr>
+					<th align="center" colspan="3">권별 대여</th>
+					<th align="center" colspan="3">권별 소장</th>
+					<th align="center" colspan="3">전권 대여</th>
+					<th align="center" colspan="3">전권 소장</th>
+					<th align="center" colspan="3">권별 대여</th>
+					<th align="center" colspan="3">권별 소장</th>
+					<th align="center" colspan="3">전권 대여</th>
+					<th align="center" colspan="3">전권 소장</th>
+				</tr>
+				<tr>
+					<th align="center">건수</th>
+					<th align="center">매출액</th>
+					<th align="center">정산액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">건수</th>
+					<th align="center">이용권(화)수</th>
+					<th align="center">매출액</th>
+					<th align="center">정산액</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listMrblue)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listMrblue}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" type="text" name="brand" th:value="${board.brand}"/></td>
+					<td><input style="" type="text" name="date" th:value="${board.date}"/></td>
+					<td><input style="text-align: left; width:200px;" type="text" name="productName" th:value="${board.productName}"/></td>
+					<td><input style="" type="text" name="author" th:value="${board.author}"/></td>
+					<td><input style="" type="text" name="code" th:value="${board.code}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="fixedNum" th:value="${board.fixedNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="fixedSales" th:value="${board.fixedSales}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="fixedPayment" th:value="${board.fixedPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnerentalNum" th:value="${board.aAppOnerentalNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnerentalUse" th:value="${board.aAppOnerentalUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnerentalPayment" th:value="${board.aAppOnerentalPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnemngrNum" th:value="${board.aAppOnemngrNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnemngrUse" th:value="${board.aAppOnemngrUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppOnemngrPayment" th:value="${board.aAppOnemngrPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllrentalNum" th:value="${board.aAppAllrentalNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllrentalUse" th:value="${board.aAppAllrentalUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllrentalPayment" th:value="${board.aAppAllrentalPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllmngrNum" th:value="${board.aAppAllmngrNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllmngrUse" th:value="${board.aAppAllmngrUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="aAppAllmngrPayment" th:value="${board.aAppAllmngrPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnerentalNum" th:value="${board.iAppOnerentalNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnerentalUse" th:value="${board.iAppOnerentalUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnerentalPayment" th:value="${board.iAppOnerentalPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnemngrNum" th:value="${board.iAppOnemngrNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnemngrUse" th:value="${board.iAppOnemngrUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppOnemngrPayment" th:value="${board.iAppOnemngrPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllrentalNum" th:value="${board.iAppAllrentalNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllrentalUse" th:value="${board.iAppAllrentalUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllrentalPayment" th:value="${board.iAppAllrentalPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllmngrNum" th:value="${board.iAppAllmngrNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllmngrUse" th:value="${board.iAppAllmngrUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="iAppAllmngrPayment" th:value="${board.iAppAllmngrPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="amountNum" th:value="${board.amountNum}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="amountUse" th:value="${board.amountUse}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="amountPayment" th:value="${board.amountPayment}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="amountSettlement" th:value="${board.amountSettlement}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="sales" th:value="${board.sales}"/></td>
+					<td><input style="" type="text" onKeyUp="switchNumCell(this);" name="payment" th:value="${board.payment}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="munpiaId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/munpia.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">작가</th>
+					<th align="center">브랜드</th>
+					<th align="center">날짜</th>
+					<th align="center">분류</th>
+					<th align="center">작품</th>
+					<th align="center">구매</th>
+					<th align="center">구매취소</th>
+					<th align="center">대여</th>
+					<th align="center">대여취소</th>
+					<th align="center">총판매</th>
+					<th align="center">총판매취소</th>
+					<th align="center">실판매</th>
+					<th align="center">정산</th>
+					<th align="center">IOS</th>
+					<th align="center">최종정산</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listMunpia)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listMunpia}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="date" type="text" th:value="${board.date}"/></td>
+					<td><input style="" name="classification" type="text" th:value="${board.classification}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="purchase" type="text" th:value="${board.purchase}"/></td>
+					<td><input style="" name="purchaseCancel" type="text" th:value="${board.purchaseCancel}"/></td>
+					<td><input style="" name="rental" type="text" th:value="${board.rental}"/></td>
+					<td><input style="" name="rentalCencel" type="text" th:value="${board.rentalCencel}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="totalSales" type="text" th:value="${board.totalSales}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="totalSalesCencel" type="text" th:value="${board.totalSalesCencel}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="realSale" type="text" th:value="${board.realSale}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="subPayment" type="text" th:value="${board.subPayment}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ios" type="text" th:value="${board.ios}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="naverId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/naver.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th rowspan="2"><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center" rowspan="2">상품명</th>
+					<th align="center" rowspan="2">컨텐츠No</th>
+					<th align="center" rowspan="2">공급자코드</th>
+					<th align="center" rowspan="2">CP명</th>
+					<th align="center" rowspan="2">저자명</th>
+					<th align="center" rowspan="2">출판사</th>
+					<th align="center" rowspan="2">나이제한</th>
+					<th align="center" rowspan="2">서비스일</th>
+					<th align="center" colspan="7">대여권</th>
+					<th align="center" colspan="7">소장권</th>
+					<th align="center" colspan="3">쿠키로 대여</th>
+					<th align="center" colspan="3">쿠키로 구매</th>
+					<th align="center" colspan="3">i쿠키로 대여</th>
+					<th align="center" colspan="3">i쿠키로 구매</th>
+					<th align="center" rowspan="2">i쿠키 수수료</th>
+					<th align="center" rowspan="2">합계</th>
+					<th align="center" rowspan="2">출판사 정산</th>
+				</tr>
+				<tr>
+					<th align="center">건수</th>
+					<th align="center">비정산</th>
+					<th align="center">무료이용권</th>
+					<th align="center">유상쿠키</th>
+					<th align="center">무상쿠키</th>
+					<th align="center">유상i쿠키</th>
+					<th align="center">무상i쿠키</th>
+					<th align="center">건수</th>
+					<th align="center">비정산품명</th>
+					<th align="center">무료이용권</th>
+					<th align="center">유상쿠키</th>
+					<th align="center">무상쿠키</th>
+					<th align="center">유상i쿠키</th>
+					<th align="center">무상i쿠키</th>
+					<th align="center">건수</th>
+					<th align="center">유상</th>
+					<th align="center">무상</th>
+					<th align="center">건수</th>
+					<th align="center">유상</th>
+					<th align="center">무상</th>
+					<th align="center">건수</th>
+					<th align="center">유상</th>
+					<th align="center">무상</th>
+					<th align="center">건수</th>
+					<th align="center">유상</th>
+					<th align="center">무상</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listNaver)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listNaver}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="productNo" type="text" th:value="${board.productNo}"/></td>
+					<td><input style="" name="providerCode" type="text" th:value="${board.providerCode}"/></td>
+					<td><input style="" name="cpName" type="text" th:value="${board.cpName}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="ageLimit" type="text" th:value="${board.ageLimit}"/></td>
+					<td><input style="" name="serviceDay" type="text" th:value="${board.serviceDay}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalNumber" type="text" th:value="${board.rentalNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalNonpy" type="text" th:value="${board.rentalNonpy}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalFree" type="text" th:value="${board.rentalFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalPaidCookie" type="text" th:value="${board.rentalPaidCookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalFreeCookie" type="text" th:value="${board.rentalFreeCookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalPaidICookie" type="text" th:value="${board.rentalPaidICookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="rentalFreeICookie" type="text" th:value="${board.rentalFreeICookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownNumber" type="text" th:value="${board.ownNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownNonpy" type="text" th:value="${board.ownNonpy}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownFree" type="text" th:value="${board.ownFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownPaidCookie" type="text" th:value="${board.ownPaidCookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownFreeCookie" type="text" th:value="${board.ownFreeCookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownPaidICookie" type="text" th:value="${board.ownPaidICookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ownFreeICookie" type="text" th:value="${board.ownFreeICookie}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieRentalNumber" type="text" th:value="${board.cookieRentalNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieRentalPaid" type="text" th:value="${board.cookieRentalPaid}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieRentalFree" type="text" th:value="${board.cookieRentalFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieOwnNumber" type="text" th:value="${board.cookieOwnNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieOwnPaid" type="text" th:value="${board.cookieOwnPaid}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cookieOwnFree" type="text" th:value="${board.cookieOwnFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieRentalNumber" type="text" th:value="${board.iCookieRentalNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieRentalPaid" type="text" th:value="${board.iCookieRentalPaid}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieRentalFree" type="text" th:value="${board.iCookieRentalFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieOwnNumber" type="text" th:value="${board.iCookieOwnNumber}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieOwnPaid" type="text" th:value="${board.iCookieOwnPaid}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieOwnFree" type="text" th:value="${board.iCookieOwnFree}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iCookieFee" type="text" th:value="${board.iCookieFee}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="sum" type="text" th:value="${board.sum}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="ridibooksId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/ridi.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>	
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">판매처</th>
+					<th align="center">시리즈 ID</th>
+					<th align="center">도서 ID</th>
+					<th align="center">제목</th>
+					<th align="center">권/화수</th>
+					<th align="center">저자</th>
+					<th align="center">역자</th>
+					<th align="center">그림</th>
+					<th align="center">출판사</th>
+					<th align="center">시리즈명</th>
+					<th align="center">전자책정가</th>
+					<th align="center">단권판매액</th>
+					<th align="center">단권판매권</th>
+					<th align="center">단권무료권</th>
+					<th align="center">대여액</th>
+					<th align="center">대여유료권</th>
+					<th align="center">대여무료권</th>
+					<th align="center">자유다운금액</th>
+					<th align="center">자유다운권</th>
+					<th align="center">세트판매액</th>
+					<th align="center">세트판매권</th>
+					<th align="center">세트대여액</th>
+					<th align="center">세트대여권</th>
+					<th align="center">취소액</th>
+					<th align="center">취소권</th>
+					<th align="center">취소단권판매액</th>
+					<th align="center">취소단권판매권</th>
+					<th align="center">취소대여액</th>
+					<th align="center">취소대여권</th>
+					<th align="center">취소자유다운액</th>
+					<th align="center">취소자유다운권</th>
+					<th align="center">취소세트판매액</th>
+					<th align="center">취소세트판매권</th>
+					<th align="center">세트대여액</th>
+					<th align="center">세트대여권</th>
+					<th align="center">정산액</th>
+					<th align="center">종이책ISBN10</th>
+					<th align="center">종이책ISBN13</th>
+					<th align="center">전자책ISBN10</th>
+					<th align="center">전자책ISBN13</th>
+					<th align="center">CP 관리 ID</th>
+					<th align="center">카테고리1</th>
+					<th align="center">카테고리2</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listRidibooks)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listRidibooks}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="sales" type="text" th:value="${board.sales}"/></td>
+					<td><input style="" name="seriesId" type="text" th:value="${board.seriesId}"/></td>
+					<td><input style="" name="bookId" type="text" th:value="${board.bookId}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="episode" type="text" th:value="${board.episode}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="translators" type="text" th:value="${board.translators}"/></td>
+					<td><input style="" name="picture" type="text" th:value="${board.picture}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="seriesName" type="text" th:value="${board.seriesName}"/></td>
+					<td><input style="" name="ebooksPrice" type="text" th:value="${board.ebooksPrice}"/></td>
+					<td><input style="" name="singleSaleSales" type="text" th:value="${board.singleSaleSales}"/></td>
+					<td><input style="" name="singleSaleTicket" type="text" th:value="${board.singleSaleTicket}"/></td>
+					<td><input style="" name="singleFreeTicket" type="text" th:value="${board.singleFreeTicket}"/></td>
+					<td><input style="" name="rentalAmount" type="text" th:value="${board.rentalAmount}"/></td>
+					<td><input style="" name="rentalTicket" type="text" th:value="${board.rentalTicket}"/></td>
+					<td><input style="" name="rentalFreeTicket" type="text" th:value="${board.rentalFreeTicket}"/></td>
+					<td><input style="" name="freeDownAmount" type="text" th:value="${board.freeDownAmount}"/></td>
+					<td><input style="" name="freeDownTicket" type="text" th:value="${board.freeDownTicket}"/></td>
+					<td><input style="" name="setSaleAmount" type="text" th:value="${board.setSaleAmount}"/></td>
+					<td><input style="" name="setSaleTicket" type="text" th:value="${board.setSaleTicket}"/></td>
+					<td><input style="" name="setRentalAmount" type="text" th:value="${board.setRentalAmount}"/></td>
+					<td><input style="" name="setRentalTicket" type="text" th:value="${board.setRentalTicket}"/></td>
+					<td><input style="" name="cancelAmount" type="text" th:value="${board.cancelAmount}"/></td>
+					<td><input style="" name="cancelTicket" type="text" th:value="${board.cancelTicket}"/></td>
+					<td><input style="" name="cancelSingleSaleSales" type="text" th:value="${board.cancelSingleSaleSales}"/></td>
+					<td><input style="" name="cancelSingleSaleTicket" type="text" th:value="${board.cancelSingleSaleTicket}"/></td>
+					<td><input style="" name="cancelRentalAmount" type="text" th:value="${board.cancelRentalAmount}"/></td>
+					<td><input style="" name="cancelRentalTicket" type="text" th:value="${board.cancelRentalTicket}"/></td>
+					<td><input style="" name="cancelFreeDownAmount" type="text" th:value="${board.cancelFreeDownAmount}"/></td>
+					<td><input style="" name="cancelFreeDownTicket" type="text" th:value="${board.cancelFreeDownTicket}"/></td>
+					<td><input style="" name="cancelSetSaleAmount" type="text" th:value="${board.cancelSetSaleAmount}"/></td>
+					<td><input style="" name="cancelSetSaleTicket" type="text" th:value="${board.cancelSetSaleTicket}"/></td>
+					<td><input style="" name="cancelSetRentalAmount" type="text" th:value="${board.cancelSetRentalAmount}"/></td>
+					<td><input style="" name="cancelSetRentalTicket" type="text" th:value="${board.cancelSetRentalTicket}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/></td>
+					<td><input style="" name="paperbookIsbn10" type="text" th:value="${board.paperbookIsbn10}"/></td>
+					<td><input style="" name="paperbookIsbn13" type="text" th:value="${board.paperbookIsbn13}"/></td>
+					<td><input style="" name="ebookIsbn10" type="text" th:value="${board.ebookIsbn10}"/></td>
+					<td><input style="" name="ebookIsbn13" type="text" th:value="${board.ebookIsbn13}"/></td>
+					<td><input style="" name="cpManageId" type="text" th:value="${board.cpManageId}"/></td>
+					<td><input style="" name="category1" type="text" th:value="${board.category1}"/></td>
+					<td><input style="" name="category2" type="text" th:value="${board.category2}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="romanceId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/romance.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">도서코드</th>
+					<th align="center">타입</th>
+					<th align="center">상품명</th>
+					<th align="center">출판사명</th>
+					<th align="center">저자명</th>
+					<th align="center">판매수</th>
+					<th align="center">인터넷판매액</th>
+					<th align="center">출판사정산액</th>
+					<th align="center">등록일</th>
+					<th align="center">판매처</th>
+					<th align="center">isbn</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listRomance)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listRomance}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="bookCode" type="text" th:value="${board.bookCode}"/></td>
+					<td><input style="" name="type" type="text" th:value="${board.type}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="saleRate" type="text" th:value="${board.saleRate}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="internetSales" type="text" th:value="${board.internetSales}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/></td>
+					<td><input style="" name="regDate" type="text" th:value="${board.regDate}"/></td>
+					<td><input style="" name="dealer" type="text" th:value="${board.dealer}"/></td>
+					<td><input style="" name="isbn" type="text" th:value="${board.isbn}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+		
+		<div id="tocsodaId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/tocsoda.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">상품바코드</th>
+					<th align="center">작품명</th>
+					<th align="center">작가명</th>
+					<th align="center">출판사</th>
+					<th align="center">PC</th>
+					<th align="center">안드로이드</th>
+					<th align="center">IOS</th>
+					<th align="center">IOS-IAP</th>
+					<th align="center">합계</th>
+					<th align="center">정산액</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listTocsoda)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listTocsoda}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="productBacord" type="text" th:value="${board.productBacord}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="pc" type="text" th:value="${board.pc}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="android" type="text" th:value="${board.android}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="ios" type="text" th:value="${board.ios}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="iosIap" type="text" th:value="${board.iosIap}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="sum" type="text" th:value="${board.sum}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="winstoreId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/onestore.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th rowspan="2"><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center" rowspan="2">파트너명</th>
+					<th align="center" rowspan="2">파트너ID</th>
+					<th align="center" rowspan="2">사업자구분</th>
+					<th align="center" rowspan="2">채널상품ID</th>
+					<th align="center" rowspan="2">채널상품명</th>
+					<th align="center" rowspan="2">상품명</th>
+					<th align="center" rowspan="2">회차</th>
+					<th align="center" rowspan="2">상품ID</th>
+					<th align="center" rowspan="2">2차정산여부</th>
+					<th align="center" rowspan="2">카테고리</th>
+					<th align="center" rowspan="2">출판사</th>
+					<th align="center" rowspan="2">글작가</th>
+					<th align="center" rowspan="2">그림작가</th>
+					<th align="center" rowspan="2">타입</th>
+					<th align="center" rowspan="2">판매건수</th>
+					<th align="center" rowspan="2">취소건수</th>
+					<th align="center" rowspan="2">정산대상액</th>
+					<th align="center" colspan="2">판매</th>
+					<th align="center" colspan="2">취소</th>
+					<th align="center" rowspan="2">합계</th>
+					<th align="center" colspan="3">결제수단</th>
+					<th align="center" colspan="3">서비스이용료</th>
+					<th align="center" rowspan="2">정산지급액</th>
+					<th align="center" rowspan="2">정산유형</th>
+				</tr>
+				<tr>
+					<th align="center">판매건수</th>
+					<th align="center">판매금액</th>
+					<th align="center">취소건수</th>
+					<th align="center">취소금액</th>
+					<th align="center">고객결제</th>
+					<th align="center">고객결제(현금영수증)</th>
+					<th align="center">쿠폰/포인트등</th>
+					<th align="center">고객결제 서비스이용료</th>
+					<th align="center">쿠폰/포인트등액</th>
+					<th align="center">차감</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listWinstore)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listWinstore}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="partnerName" type="text" th:value="${board.partnerName}"/></td>
+					<td><input style="" name="partnerId" type="text" th:value="${board.partnerId}"/></td>
+					<td><input style="" name="entrepreneur" type="text" th:value="${board.entrepreneur}"/></td>
+					<td><input style="" name="channelProductId" type="text" th:value="${board.channelProductId}"/></td>
+					<td><input style="" name="channelProductName" type="text" th:value="${board.channelProductName}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="episode" type="text" th:value="${board.episode}"/></td>
+					<td><input style="" name="productId" type="text" th:value="${board.productId}"/></td>
+					<td><input style="" name="secondSettlementStatus" type="text" th:value="${board.secondSettlementStatus}"/></td>
+					<td><input style="" name="category" type="text" th:value="${board.category}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="pictureAuthor" type="text" th:value="${board.pictureAuthor}"/></td>
+					<td><input style="" name="type" type="text" th:value="${board.type}"/></td>
+					<td><input style="" name="saleRate" type="text" th:value="${board.saleRate}"/></td>
+					<td><input style="" name="cencelRate" type="text" th:value="${board.cencelRate}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="settlementTargetAmount" type="text" th:value="${board.settlementTargetAmount}"/></td>
+					<td><input style="" name="salesRate" type="text" th:value="${board.salesRate}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="salesAmount" type="text" th:value="${board.salesAmount}"/></td>
+					<td><input style="" name="cencelsRate" type="text" th:value="${board.cencelsRate}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="cencelsAmount" type="text" th:value="${board.cencelsAmount}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="sum" type="text" th:value="${board.sum}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="customerPayment" type="text" th:value="${board.customerPayment}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="customerPaymentReceipt" type="text" th:value="${board.customerPaymentReceipt}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="customerPaymentEtc" type="text" th:value="${board.customerPaymentEtc}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="customerPaymentService" type="text" th:value="${board.customerPaymentService}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="customerPaymentServiceEtc" type="text" th:value="${board.customerPaymentServiceEtc}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="serviceDeduction" type="text" th:value="${board.serviceDeduction}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/></td>
+					<td><input style="" name="paymentType" type="text" th:value="${board.paymentType}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="yes24Id" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/yes24.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">no</th>
+					<th align="center">도서명</th>
+					<th align="center">출판사</th>
+					<th align="center">출판사판매가</th>
+					<th align="center">판매서점</th>
+					<th align="center">서점판매가</th>
+					<th align="center">서점환불가</th>
+					<th align="center">원가율</th>
+					<th align="center">출판사정산액</th>
+					<th align="center">이벤트구분</th>
+					<th align="center">판매구분</th>
+					<th align="center">이벤트판매가</th>
+					<th align="center">저자명</th>
+					<th align="center">bookID</th>
+					<th align="center">ePubID</th>
+					<th align="center">세트코드</th>
+					<th align="center">종이책isbn</th>
+					<th align="center">전자책isbn</th>
+					<th align="center">판매일</th>
+					<th align="center">환불일</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listYes24)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listYes24}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="no" type="text" th:value="${board.no}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="brandSalePrice" type="text" th:value="${board.brandSalePrice}"/></td>
+					<td><input style="" name="sales" type="text" th:value="${board.sales}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="salesSalePrice" type="text" th:value="${board.salesSalePrice}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="salesRefundPrice" type="text" th:value="${board.salesRefundPrice}"/></td>
+					<td><input style="" name="costRate" type="text" th:value="${board.costRate}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/></td>
+					<td><input style="" name="eventType" type="text" th:value="${board.eventType}"/></td>
+					<td><input style="" name="saleType" type="text" th:value="${board.saleType}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="eventSalePrice" type="text" th:value="${board.eventSalePrice}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="bookId" type="text" th:value="${board.bookId}"/></td>
+					<td><input style="" name="epublId" type="text" th:value="${board.epublId}"/></td>
+					<td><input style="" name="setCode" type="text" th:value="${board.setCode}"/></td>
+					<td><input style="" name="paperbookIsbn" type="text" th:value="${board.paperbookIsbn}"/></td>
+					<td><input style="" name="ebookIsbn" type="text" th:value="${board.ebookIsbn}"/></td>
+					<td><input style="" name="saleDate" type="text" th:value="${board.saleDate}"/></td>
+					<td><input style="" name="refundDate" type="text" th:value="${board.refundDate}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+
+		<div id="aladinId" style="display:none">
+			<div class="sheet-container">
+			<div class="logo">
+				<img src="/image/aladin.png">
+				<h2></h2>
+			</div>
+			<div style="overflow:scroll; height:500px;">
+			<div class="card-body">
+			<table border="1">
+				<tr>
+					<th><input type="checkbox" name="all_chk" onclick="doPopCheckAll();"></th>
+					<th align="center">판매/취소일시</th>
+					<th align="center">ItemId</th>
+					<th align="center">도서명</th>
+					<th align="center">판매형태</th>
+					<th align="center">정가가</th>
+					<th align="center">판매가</th>
+					<th align="center">정산액</th>
+					<th align="center">취소주문일시</th>
+					<th align="center">저자명</th>
+					<th align="center">출판사명</th>
+					<th align="center">정산처명</th>
+					<th align="center">isbn</th>
+					<th align="center">CID</th>
+				</tr>
+				<tr th:if="${#lists.isEmpty(listAladin)}">
+					<td colspan="100">
+						데이터가 없습니다.
+					</td>
+				</tr>
+				<tr th:each="board : ${listAladin}">
+					<td><input type="checkbox" name="delete_ids" th:value="${board.idx}"/></td>
+					<td><input style="" name="salesCancelDate" type="text" th:value="${board.salesCancelDate}"/></td>
+					<td><input style="" name="itemId" type="text" th:value="${board.itemId}"/></td>
+					<td><input style="text-align: left; width:200px;" name="productName" type="text" th:value="${board.productName}"/></td>
+					<td><input style="" name="salesType" type="text" th:value="${board.salesType}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="netPrice" type="text" th:value="${board.netPrice}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="salePrice" type="text" th:value="${board.salePrice}"/></td>
+					<td><input style="" onKeyUp="switchNumCell(this);" name="payment" type="text" th:value="${board.payment}"/></td>
+					<td><input style="" name="cancelDate" type="text" th:value="${board.cancelDate}"/></td>
+					<td><input style="" name="author" type="text" th:value="${board.author}"/></td>
+					<td><input style="" name="brand" type="text" th:value="${board.brand}"/></td>
+					<td><input style="" name="publisher" type="text" th:value="${board.publisher}"/></td>
+					<td><input style="" name="isbn" type="text" th:value="${board.isbn}"/></td>
+					<td><input style="" name="cid" type="text" th:value="${board.cid}"/>
+					<input type="hidden" name="writerId" th:value="${board.writerId}"/>
+					<input type="hidden" name="setDate" th:value="${board.setDate}"/></td>
+				</tr>
+			</table>
+			</div>
+			</div>
+			</div>
+		</div>
+		<!-- Modal -->
+		<div class="upload-modal" id="myModal">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close closeBtn" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title" style="position: absolute;">엑셀업로드</h4>
+					</div>
+					<div class="modal-body">
+						<input class="input_not_css" type="text" id="yearText" name="yearText"> 년
+						<input class="input_not_css" type="text" id="monthText" name="monthText"> 월<br>
+					</div>
+					<div class="modal-footer">
+						<input type="file" id="excelFile" name="file" class="btn btn-success btn-icon-split">
+						<button type="button" id="btnUpload" class="btn btn-success btn-icon-split">
+							<span class="text">파일업로드</span>
+						</button>
+						<span th:if="${platformType.equals('p_yes24')}">
+							<button type="button" id="btnUpload_yes24B2b" class="btn btn-success btn-icon-split">
+								<span class="text">yes24_B2B업로드</span>
+							</button>
+						</span>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	</form>
+	
+	<div class="d-flex p-3">
+	<th:block sec:authorize="hasRole('ROLE_ADMIN')">
+		<button type="submit" id="btnUpdate" class="btn btn-info mr-2">
+			<span class="icon text-white-50"><i class="fas fa-info-circle"></i></span>
+			<span class="text">수정하기</span>
+		</button>
+		<button type="submit" onclick="remove();" id="btnDelete" class="btn btn-danger mr-2">
+			<span class="icon text-white-50"><i class="fas fa-trash"></i></span>
+			<span class="text">삭제하기</span>
+		</button>
+   	    <button id="uploadBtn" type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#myModal">
+	  		<span class="icon text-white-50"><i class="fas fa-upload"></i></span>
+	  		<span class="text">파일업로드</span>
+		</button>
+		</th:block>
+		<button type="submit" id="btnDownLoad" class="btn btn-primary mr-2">
+	  		<span class="icon text-white-50"><i class="fas fa-download"></i></span>
+			<span class="text">파일다운로드</span>
+		</button>
+	</div>
+	
+</div>
+</body>
+</html>

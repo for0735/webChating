@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+
+
+<body>
+
+   <div align="right" th:fragment="header">
+   	  <nav class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow"  style="background-color: cornflowerblue;">
+   	  	<!-- 슬라이드 버튼 -->
+   	  	<ul class="navbar-nav ml-auto" sec:authorize="!isAuthenticated()">
+   	  		<li class="nav-item"><a class="nav-link" href="#" th:href="@{/}" >회원가입</a></li>
+   	  		<li class="nav-item"><a class="nav-link" href="#" th:href="@{/}" >로그인</a></li>
+   	  	</ul>
+   	  	<ul class="navbar-nav ml-auto " sec:authorize="isAuthenticated()">
+			<span id="burger" style="display: none;" class="burger">&#9776;</span>
+<!--    	  		<li class="nav-item"><span class="nav-link" sec:authentication="principal.username">환영합니다.</span></li>  -->
+   	  		<li class="nav-item"><span class="nav-link">온글미디어에 오신것을 환영합니다</span></li>
+<!--    	  		<li class="nav-item"><a class="nav-link" href="../auth/logoutForm.html" th:href="@{/auth/logout}" >로그아웃</a></li> -->
+   	  		<li class="nav-item"><button id="logoutBtn" class="btn btn-primary" href="../auth/logoutForm.html" th:href="@{/auth/logout}" style="margin-top: 15px">로그아웃</button></li>
+   	  	</ul>
+   	  </nav>
+   </div>
+   
+</body>
+</html>

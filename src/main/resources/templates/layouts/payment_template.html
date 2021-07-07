@@ -1,0 +1,544 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+   <title>Main</title>
+   <script src="/js/jQuery-2.1.4.min.js"></script>
+	<!--    <script src="/js/platform.js"></script> -->
+   
+	<!-- Custom styles for this template-->
+	<link href="../css/sb-admin-2.min.css" rel="stylesheet">
+	
+	<!-- Custom fonts for this template -->
+	<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	
+	<!-- Custom styles for this page -->
+	<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	
+	<!-- Bootstrap core JavaScript-->
+	<script src="/vendor/jquery/jquery.min.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+	
+	<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+  
+  
+</head>
+<style>
+	input {
+		border : 0px;
+		background-color : transparent;
+	}
+	
+	table {
+		font-size: 12px !important;
+		text-align: center;
+	}
+	table input {
+		text-align: center;
+	}
+	
+	.sheet-container{
+		
+	}
+	
+	.sheet-container .logo {
+		position: relative;	
+		height: 100px;
+	}
+	
+	.sheet-container .logo img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		top: 0px;
+		left: 15px;
+	}
+	
+	.sheet-container .logo h2 {
+		position: absolute;
+		top: 35%;
+		left: 50%;
+	}
+	
+	.flat-title {
+		
+	}
+	
+	.flat-title .search {
+		
+	}
+	
+	.flat-title .search select {
+		display: inline-block;
+	}
+	
+	
+	.slide-left {
+	width: 0px !important;
+	transition: 1s;
+	}
+	
+	.slide-right {
+		width: 100% !important;
+		transition: 1s;
+	}
+
+	.burger {
+		color: white; font-size:30px; cursor:pointer;
+		position: absolute;
+		left: 30px;
+		top: 15px;
+	}
+</style>
+<script type="text/javascript">
+	$("document").ready(function(){
+		var formObj = $("#listForm");
+		
+		let today = new Date();
+		let year = today.getFullYear();
+		
+		var arrYear = new Array();
+		
+		for(var i=0; i<10; i++)
+		{
+			arrYear[i]=year-i + "년";
+		}
+		
+		var monthSelect = document.getElementById("selete_month");
+		var yearSelect = document.getElementById("selete_year");
+		
+		var option1 = document.createElement("option");
+		var option2 = document.createElement("option");
+		option1.text = arrYear[0];
+		option2.text = arrYear[1];
+		option1.value = arrYear[0];
+		option2.value = arrYear[1];
+		yearSelect.add(option1, null);
+		yearSelect.add(option2, null);
+		
+		yearSelect = document.getElementById("selete_year_select");
+
+		var option1_s = document.createElement("option");
+		var option2_s = document.createElement("option");
+		option1_s.text = arrYear[0];
+		option2_s.text = arrYear[1];
+		option1_s.value = arrYear[0];
+		option2_s.value = arrYear[1];
+		yearSelect.add(option1_s, null);
+		yearSelect.add(option2_s, null);
+		
+		$("#btnDownLoad").on("click", function(){
+			if (confirm("엑셀파일로 다운로드 하시겠습니까? ")) {
+				formObj.attr("action", "/ebook/paymentUpload");
+				formObj.attr("method", "post");
+				formObj.submit();
+			} else {
+				
+			}
+		});
+		
+		switchNum();
+	});
+	
+	$("#btnSelect").on("click", function(){
+		formObj.attr("action", "/ebook/payment");
+		formObj.attr("method", "post");
+		formObj.submit();
+	});
+	
+	function func_select(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		console.log(token);
+		alert(token);
+		
+		if (confirm("해당일자로 조회하시겠습니까?")) {
+			$.ajax({
+				type:"post",
+				url:"/ebook/payment",
+				data:	{ 
+							"p_year_select"	: $("#selete_year_select option:selected").val(),
+							"p_month_select"  : $("#selete_month_select option:selected").val()
+						},
+						
+				beforeSend : function(xhr) {   
+					// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+	                 xhr.setRequestHeader( header, token );
+	             },
+				success:function(data, textStatus, jqXHR){
+
+						if(textStatus){
+							location.href="/ebook/payment";
+						}else{
+							alert("조회 실패.");
+						}
+				},
+			     error:function(request,status,error){
+			         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		        }
+
+			});
+		} else{
+			
+		}
+	}
+	
+	function func_payment(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		console.log(token);
+		
+		if (confirm("정산하시겠습니까?")) {
+			$.ajax({
+				type:"post",
+				url:"/ebook/createPayment",
+				data:	{ 
+							"p_year"	: $("#selete_year option:selected").val(),
+							"p_month"   : $("#selete_month option:selected").val()
+						},
+						
+				beforeSend : function(xhr) {   
+					// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+	                 xhr.setRequestHeader( header, token );
+	             },
+				success:function(data, textStatus, jqXHR){
+
+						if(textStatus){
+							alert("정산완료되었습니다.");
+							location.href="/ebook/payment";
+						}else{
+							alert("정산 실패.");
+						}
+				},
+			     error:function(request,status,error){
+			         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		        }
+
+			});
+		} else{
+			
+		}
+	}
+	
+	function func_finalPayment(){
+		
+		var token = $("meta[name='_csrf']").attr("content");
+		var header = $("meta[name='_csrf_header']").attr("content");
+		
+		console.log(token);
+		
+		if (confirm("정산하시겠습니까? 작가별이월금, 선인세 등 정보가 수정됩니다.")) {
+			$.ajax({
+				type:"post",
+				url:"/ebook/finalPayment",
+				data:	{ 
+							"p_year"	: $("#selete_year option:selected").val(),
+							"p_month"   : $("#selete_month option:selected").val()
+						},
+						
+				beforeSend : function(xhr) {   
+					// 데이터를 전송하기 전에 헤더에 csrf값을 설정한다
+	                 xhr.setRequestHeader( header, token );
+	             },
+				success:function(data, textStatus, jqXHR){
+
+						if(textStatus){
+							alert("정산완료되었습니다.");
+							location.href="/ebook/payment";
+						}else{
+							alert("정산 실패.");
+						}
+				},
+			     error:function(request,status,error){
+			         alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		        }
+
+			});
+		} else{
+			
+		}
+	}
+	
+	function replaceAll(str, searchStr, replaceStr) {
+		return str.split(searchStr).join(replaceStr);
+	}
+	
+	function switchNum(){
+		var size = $("input[name='payBookcube']").length;
+		var tempNum = "";		
+		
+		for(i=0;i<size;i++){
+			
+			tempNum = $("input[name='payBookcube']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payBookcube']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payBookcube']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payEpub']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payEpub']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payEpub']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payJoara']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payJoara']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payJoara']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payKakao']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payKakao']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payKakao']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payKyobo']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payKyobo']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payKyobo']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payMrblue']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payMrblue']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payMrblue']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payMunpia']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payMunpia']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payMunpia']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payNaver']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payNaver']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payNaver']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payRidibooks']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payRidibooks']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payRidibooks']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payRomance']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payRomance']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payRomance']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payTocsoda']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payTocsoda']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payTocsoda']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payWinstore']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payWinstore']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payWinstore']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payYes24']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payYes24']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payYes24']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payAladin']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payAladin']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payAladin']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='allPayment']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='allPayment']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='allPayment']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='authorSettlement']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='authorSettlement']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='authorSettlement']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='carryAmount']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='carryAmount']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='carryAmount']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='payment']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='payment']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='payment']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='virtuousTax']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='virtuousTax']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='virtuousTax']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='incomeTax']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='incomeTax']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='incomeTax']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='wthldTax']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='wthldTax']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='wthldTax']").eq(i).val(tempNum);
+			}
+			
+			tempNum = $("input[name='authorPaid']").eq(i).val();
+			tempNum = replaceAll(tempNum, ",", "");
+			if ( !$.isNumeric(tempNum) ) {
+				$("input[name='authorPaid']").eq(i).val("");
+			} else {
+				tempNum = tempNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",");
+				$("input[name='authorPaid']").eq(i).val(tempNum);
+			}
+			
+		}
+	}
+	
+	// 슬라이드 버튼
+	$('#sidebarToggle').on('click', function () {
+		$(".slide-action").addClass("slide-left");
+		$(".slide-action").removeClass("slide-right");
+		$(".slide-action-logo").hide();
+		$('#burger').show();
+	});
+	
+	// burger 버튼
+	$('#burger').on('click', function () {
+		$(".slide-action").addClass("slide-right");
+		$(".slide-action").removeClass("slide-left");
+		$(".slide-action-logo").show();
+		$('#burger').hide();
+	});
+</script>
+<body>
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+		<div th:replace="~{fragments/menu::menu}"></div>
+		<hr>
+			
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:replace="~{fragments/header::header}"></div>
+				<hr>
+				
+				<div align="center" layout:fragment="content" ></div>
+				<hr>
+				
+				<div th:replace="~{fragments/footer::footer}"></div>
+				<hr>
+			</div>		
+		</div>
+
+	</div>
+	<form id="logoutForm" action="logoutForm.html" th:action="@{/auth/logout}" method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+   </form> 
+   <script>
+		$("#logoutBtn").click(function() {
+			if( confirm("로그아웃 하시겠습니까?") ){
+				$("#logoutForm").submit();
+			}		
+		});
+		// 슬라이드 버튼
+		$('#sidebarToggle').on('click', function () {
+			$(".slide-action").addClass("slide-left");
+			$(".slide-action").removeClass("slide-right");
+			$(".slide-action-logo").hide();
+			$('#burger').show();
+		});
+		
+		// burger 버튼
+		$('#burger').on('click', function () {
+			$(".slide-action").addClass("slide-right");
+			$(".slide-action").removeClass("slide-left");
+			$(".slide-action-logo").show();
+			$('#burger').hide();
+		});
+	</script>
+</body>
+</html>

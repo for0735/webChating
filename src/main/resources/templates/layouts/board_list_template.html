@@ -1,0 +1,150 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+   <title>Main</title>
+   <script src="/js/jQuery-2.1.4.min.js"></script>
+	<!--    <script src="/js/platform.js"></script> -->
+   
+	<!-- Custom styles for this template-->
+	<link href="../css/sb-admin-2.min.css" rel="stylesheet">
+	
+	<!-- Custom fonts for this template -->
+	<link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	
+	<!-- Custom styles for this page -->
+	<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+	
+	<!-- Bootstrap core JavaScript-->
+	<script src="/vendor/jquery/jquery.min.js"></script>
+	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- Core plugin JavaScript-->
+	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+	
+	<!-- Custom scripts for all pages-->
+	<script src="/js/sb-admin-2.min.js"></script>
+  
+  
+</head>
+<style>
+	input {
+		border : 0px;
+	}
+	
+	table {
+		font-size: 12px !important;
+		text-align: center;
+	}
+	table input {
+		text-align: center;
+	}
+	
+	.sheet-container{
+		
+	}
+	
+	.sheet-container .logo {
+		position: relative;	
+		height: 100px;
+	}
+	
+	.sheet-container .logo img {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		top: 0px;
+		left: 15px;
+	}
+	
+	.sheet-container .logo h2 {
+		position: absolute;
+		top: 35%;
+		left: 50%;
+	}
+	
+	.flat-title {
+		
+	}
+	
+	.flat-title .search {
+		
+	}
+	
+	.flat-title .search select {
+		display: inline-block;
+	}
+	
+		
+	.slide-left {
+	width: 0px !important;
+	transition: 1s;
+	}
+	
+	.slide-right {
+		width: 100% !important;
+		transition: 1s;
+	}
+
+	.burger {
+		color: white; font-size:30px; cursor:pointer;
+		position: absolute;
+		left: 30px;
+		top: 15px;
+	}
+	
+</style>
+<script>
+	$(document).ready(function(){
+		console.log($("#use_update").val());
+	});
+</script>
+
+<body>
+	<!-- Page Wrapper -->
+	<div id="wrapper">
+		<div th:replace="~{fragments/menu::menu}"></div>
+		<hr>
+			
+		<div id="content-wrapper" class="d-flex flex-column">
+			<div id="content">
+				<div th:replace="~{fragments/header::header}"></div>
+				<hr>
+				
+				<div align="center" layout:fragment="content" ></div>
+				<hr>
+				
+				<div th:replace="~{fragments/footer::footer}"></div>
+				<hr>
+			</div>		
+		</div>
+
+	</div>
+	<form id="logoutForm" action="logoutForm.html" th:action="@{/auth/logout}" method="post">
+		<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+   </form> 
+   <script>
+		$("#logoutBtn").click(function() {
+			if( confirm("로그아웃 하시겠습니까?") ){
+				$("#logoutForm").submit();
+			}		
+		});
+		// 슬라이드 버튼
+		$('#sidebarToggle').on('click', function () {
+			$(".slide-action").addClass("slide-left");
+			$(".slide-action").removeClass("slide-right");
+			$(".slide-action-logo").hide();
+			$('#burger').show();
+		});
+		
+		// burger 버튼
+		$('#burger').on('click', function () {
+			$(".slide-action").addClass("slide-right");
+			$(".slide-action").removeClass("slide-left");
+			$(".slide-action-logo").show();
+			$('#burger').hide();
+		});
+	</script>
+</body>
+</html>

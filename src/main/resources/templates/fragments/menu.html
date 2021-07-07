@@ -1,0 +1,156 @@
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+
+<body>
+	<style>
+		#left-menu {
+			overflow-x: hidden;
+  			transition: 0.5s;
+		}
+		
+		
+	</style>
+
+	<div align="center" th:fragment="menu" style="background-color: #224abe !important">
+
+      <!-- Page Wrapper -->
+  	  <div id="wrapper" >
+         <th:block sec:authorize="isAuthenticated()">
+             <!-- 관리자 권한 메뉴 -->
+             <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+             	<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion slide-action" id="left-menu">
+		         	<!-- Sidebar - Brand -->
+					<a class="sidebar-brand d-flex align-items-center justify-content-center"  th:href="@{../../}">
+					  <!-- <div class="sidebar-brand-text mx-3">ALOHA CAMPUS</div> -->
+					  <img src="/image/img_ongle.png" style="width:100px;" class="slide-action-logo">
+					</a>
+             		<li class="nav-item">
+             			<a class="nav-link" href="#" th:href="@{/user/list}" >
+             				<i class="fa fa-user"></i>
+             				<span>회원정보</span>
+             			</a>
+             		</li>
+					<li class="nav-item"><a class="nav-link collapsed" href="#"
+						data-toggle="collapse" data-target="#collapsePages"
+						aria-expanded="false" aria-controls="collapsePages"> <i
+							class="fas fa-fw fa-folder"></i> <span>플랫폼</span>
+					</a>
+						<div id="collapsePages" class="collapse"
+							aria-labelledby="headingPages" data-parent="#collapsePages"
+							style="">
+							<div class="bg-white py-2 collapse-inner rounded">
+								<h6 class="collapse-header">Platforms:</h6>
+								<a class="collapse-item" href="#" th:href="@{/ebook/list(platformType=p_bookcube)}" alt="">북큐브</a>
+								<a class="collapse-item" href="#" th:href="@{/ebook/list(platformType=p_epub)}" alt="">이퍼브</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_joara)}" alt="">조아라</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_kakao)}" alt="">카카오</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_kyobo)}" alt="">교보문고</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_mrblue)}" alt="">미스터블루</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_munpia)}" alt="">문피아</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_naver)}" alt="">네이버</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_ridibooks)}" alt="">리디북스</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_romance)}" alt="">로망띠끄</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_tocsoda)}" alt="">톡소다</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_winstore)}" alt="">윈스토어</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_yes24)}" alt="">예스24</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_aladin)}" alt="">알라딘</a>
+								<div class="collapse-divider"></div>
+							</div>
+						</div>
+					</li>
+             		<li class="nav-item">
+             			<a class="nav-link"  href="#" th:href="@{/ebook/payment}" alt="">
+	             			<i class="fas fa-fw fa-chart-area"></i>
+	             			<span>정산내역</span>
+             			</a>
+             		</li>
+             		<li class="nav-item">
+             			<a class="nav-link"  href="#" th:href="@{/ebook/dbSettings}" alt="">
+             				<i class="fas fa-fw fa-table"></i>
+             			    <span>사전DB작업</span>
+             			</a>
+             		</li>
+             		<li class="nav-item">
+             			<a class="nav-link"  href="#" th:href="@{/board/list}" alt="">
+             				<i class="fas fa-fw fa-table"></i>
+             			    <span>공지사항</span>
+             			</a>
+             		</li>
+             		<!-- 슬라이드 버튼 -->
+             		<hr class="sidebar-divider d-none d-md-block">
+             		<div class="text-center d-none d-md-inline">
+						<button class="rounded-circle border-0" id="sidebarToggle"></button>
+					</div>
+             	</ul>	
+             </th:block>
+             
+             
+              <!-- 사용자 권한 메뉴 -->
+             <th:block sec:authorize="hasRole('ROLE_USER')">
+		         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion slide-action">
+		         	<!-- Sidebar - Brand -->
+					<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{../../}">
+					  <!-- <div class="sidebar-brand-text mx-3">ALOHA CAMPUS</div> -->
+					  <img src="/image/img_ongle.png" style="width:100px;" class="slide-action-logo">
+					</a>
+             		<li class="nav-item">
+             			<a class="nav-link" href="#" th:href="@{/user/list}" >
+             				<i class="fa fa-user"></i>
+             				<span>회원정보</span>
+             			</a>
+             		</li>
+             		<li class="nav-item"><a class="nav-link collapsed" href="#"
+						data-toggle="collapse" data-target="#collapsePages"
+						aria-expanded="false" aria-controls="collapsePages"> <i
+							class="fas fa-fw fa-folder"></i> <span>플랫폼</span>
+					</a>
+						<div id="collapsePages" class="collapse"
+							aria-labelledby="headingPages" data-parent="#collapsePages"
+							style="">
+							<div class="bg-white py-2 collapse-inner rounded">
+								<h6 class="collapse-header">Platforms:</h6>
+								<a class="collapse-item" href="#" th:href="@{/ebook/list(platformType=p_bookcube)}" alt="">북큐브</a>
+								<a class="collapse-item" href="#" th:href="@{/ebook/list(platformType=p_epub)}" alt="">이퍼브</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_joara)}" alt="">조아라</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_kakao)}" alt="">카카오</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_kyobo)}" alt="">교보문고</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_mrblue)}" alt="">미스터블루</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_munpia)}" alt="">문피아</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_naver)}" alt="">네이버</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_ridibooks)}" alt="">리디북스</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_romance)}" alt="">로망띠끄</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_tocsoda)}" alt="">톡소다</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_winstore)}" alt="">윈스토어</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_yes24)}" alt="">예스24</a>
+								<a class="collapse-item"  href="#" th:href="@{/ebook/list(platformType=p_aladin)}" alt="">알라딘</a>
+								<div class="collapse-divider"></div>
+							</div>
+						</div>
+					</li>
+             		<li class="nav-item">
+             			<a class="nav-link"  href="#" th:href="@{/ebook/payment}" alt="">
+	             			<i class="fas fa-fw fa-chart-area"></i>
+	             			<span>정산내역</span>
+             			</a>
+             		</li>
+             		<li class="nav-item">
+             			<a class="nav-link"  href="#" th:href="@{/board/list}" alt="">
+	             			<i class="fas fa-fw fa-chart-area"></i>
+	             			<span>공지사항</span>
+             			</a>
+             		</li>
+             		<!-- 슬라이드 버튼 -->
+             		<hr class="sidebar-divider d-none d-md-block">
+             		<div class="text-center d-none d-md-inline">
+						<button class="rounded-circle border-0" id="sidebarToggle"></button>
+					</div>
+             	</ul>
+	         </th:block> 
+         </th:block>
+			
+		</div>
+   </div>
+   
+</body>
+</html>

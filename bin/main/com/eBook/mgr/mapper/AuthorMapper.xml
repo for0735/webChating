@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eBook.mgr.mapper.AuthorMapper">
+
+	<resultMap type="com.eBook.mgr.dto.AuthorListDto" id="AuthorDto">
+		<result property="idx" column="idx" />
+		<result property="writerId" column="writer_id" />
+		<result property="id" column="id" />
+		<result property="author" column="author" />
+		<result property="realName" column="real_name" />
+		<result property="accountNumber" column="account_number" />
+		<result property="ctzNumber" column="ctz_number" />
+		<result property="virtuousTax" column="virtuous_tax" />
+		<result property="loginStatus" column="login_status" />
+		<result property="settlementRatio" column="settlement_ratio" />
+		<result property="manager" column="manager" />
+		<result property="carryAmount" column="carry_amount" />
+	</resultMap>
+	
+	<select id="read" resultMap="AuthorDto">
+		SELECT mem.idx,
+			author.writer_id,
+			mem.id,
+			author.author,
+			mem.real_name,
+			author.account_number,
+			mem.ctz_number,
+			author.virtuous_tax,
+			mem.login_status,
+			author.settlement_ratio,
+			mem.manager,
+			author.carry_amount
+		FROM member mem,
+		     tb_author author
+		WHERE mem.id = author.id
+		 AND  author.writer_id = #{writerId} 
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
